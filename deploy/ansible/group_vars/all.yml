@@ -1,0 +1,174 @@
+#########
+# PROJECT
+#########
+
+# Certain tasks may operate in a less secure (but more convenient) manner, eg.
+# enabling passwordless sudo or generating self-signed ssl certs, when testing
+# locally, in Vagrant. But not in production!
+env: production
+
+# This var is referenced by a few other vars, eg. git_repo, hostname, site_fqdn.
+project_name: pombot
+
+# This is what you'll see at the bash prompt if/when you ssh into your server.
+hostname: "{{project_name}}"
+
+# This is the fully qualified domain name of your production server. Because
+# nginx checks this value against the URL being requested, it must be the same
+# as the server's DNS name. This value is overridden for Vagrant and staging
+# servers.
+site_fqdn: "{{project_name}}.bocoup.com"
+
+##############
+# PROVISIONING
+##############
+
+# Keys to be added to apt.
+apt_keys:
+  - "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+
+# Ppas to be added to apt. Useful ppas (replace trusty with your Ubuntu
+# version codename, if necessary):
+# Git latest:     ppa:git-core/ppa
+# Node.js 4.2.x (LTS): deb https://deb.nodesource.com/node_4.x trusty main
+# Node.js 5.x.x: deb https://deb.nodesource.com/node_5.x trusty main
+apt_ppas:
+  - "ppa:git-core/ppa"
+  - "deb https://deb.nodesource.com/node_0.12 trusty main"
+
+# Any apt packages to install. Apt package versions may be specified like
+# - git=2.1.0
+apt_packages:
+  - git
+  - nodejs
+  - nginx
+
+############
+# WEB SERVER
+############
+
+# Should the nginx server use HTTPS instead of HTTP?
+ssl: true
+
+# If ssl is enabled, these cert/key files will be used by nginx. You will need
+# to ensure these files are valid and already on the server (which you can do
+# via cloud-init, scp, etc).
+ssl_cert_path: /etc/ssl/star.bocoup.com.cert
+ssl_key_path: /etc/ssl/star.bocoup.com.key
+
+# Use a custom parameter for stronger DHE key exchange.
+dhe_param_path: /etc/ssl/certs/dhparam.pem
+
+# The directory that nginx will serve as the production site. This is typically
+# where your index.html file exists (or will exist after the build process).
+public_path: "{{site_path}}"
+
+# Nginx dir and conf dir.
+nginx_dir: /etc/nginx
+conf_dir: "{{nginx_dir}}/conf.d"
+
+# Nginx templated configuration files to create.
+shared:
+  - file: ssl_params
+    directory: "{{nginx_dir}}"
+  - file: gzip_params
+    directory: "{{nginx_dir}}"
+confs:
+  - file: site.conf
+    directory: "{{conf_dir}}"
+
+#######
+# USERS
+#######
+
+# Specified users will be added to the remote server, along with all specified
+# public keys. Removing a user from this list does NOT remove them from the
+# remote server! You need to set their state to "absent", remove all the other
+# properties for that user, and re-run the "configure" playbook. Also, the
+# shadow password (that user's sudo password) should be a hash, and NOT plain
+# text!
+#
+# Generate a shadow password hash using the following command:
+# openssl passwd -1 -salt $(openssl rand -base64 6) yourpassword
+#
+users: []
+
+# users:
+#   - name: bob
+#     state: present
+#     real_name: Bob Bocoup
+#     shadow_pass: $xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/
+#     public_keys:
+#       - ssh-rsa xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx bob@bocoup.com
+
+########
+# DEPLOY
+########
+
+# Parent directory for cloned repository directories. The clone_path and
+# site_path should be children of this directory.
+base_path: /mnt
+
+# Temporary location where the Git repo will be cloned and the build scripts
+# will be run before going live.
+clone_path: "{{base_path}}/temp"
+
+# Where the production site symlink will exist.
+site_path: "{{base_path}}/site"
+
+# If defined, only this many of the most recent clone directories (including the
+# current specified commit) will be retained. Anything older will be removed,
+# once the current clone has been made live.
+keep_n_most_recent: 3
+
+# If this variable is defined, a file containing build information, including
+# the timestamp, commit, sha, and a few other useful values will be generated
+# after the build has completed. This file is relative to your project root.
+build_info_path: "build/build.txt"
+
+# If these variables are uncommented, add swap space to the machine when the
+# configure playbook is run. The swap configuration controlled by this is
+# meant to address installation problems on machines with minimal ram (e.g.
+# npm bails during install because it runs out of memory)
+swap_file_path: /swap
+swap_file_size: 2GB
+
+###################
+# DEPLOY EXTRA VARS
+###################
+
+# Specify any valid remote (typically a github user)
+remote: bocoup
+
+# Specify any ref (eg. branch, tag, SHA) to be deployed. This ref must be
+# pushed to the remote git_repo before it can be deployed.
+commit: master
+
+# Git repo address.
+# For private repositories: git@github.com:{{remote}}/{{project_name}}.git
+# For public: https://github.com/{{remote}}/{{project_name}}
+git_repo: https://github.com/{{remote}}/{{project_name}}
+
+# Uncomment this if if you are checking out a private repo
+# ansible_ssh_common_args: -o ForwardAgent=yes
+
+# Clone and build the specified commit SHA, regardless of prior build status.
+force: false
+
+# Use the local project Git repo instead of the remote git_repo. This option
+# only works with the vagrant inventory, and not with staging or production.
+local: false
+
+#########
+# SECRETS
+#########
+secret_user: "{{ lookup('env', 'USER') }}"
+secret_server: nest.bocoup.com
+secret_path: /mnt/secrets
+secret_vars:
+  - src: bocoup-rds.json
+    dest: rds_db_secrets
+  - src: db.key
+    dest: DB_ENCRYPTION_KEY
+  - src: github.json
+    dest: github_secrets

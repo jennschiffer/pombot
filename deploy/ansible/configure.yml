@@ -1,0 +1,16 @@
+# Configure server. This playbook is run after a server is provisioned but
+# before a project is deployed, to configure the system, add user accounts,
+# and setup long-running processes like nginx, postgres, etc.
+
+- hosts: all
+  become: yes
+  become_method: sudo
+  roles:
+    - {role: configure, tags: configure}
+    - {role: users, tags: users}
+    - {role: nginx, tags: nginx}
+  handlers:
+    - name: restart nginx
+      service: name=nginx state=restarted
+    - name: restart sshd
+      service: name=ssh state=restarted
