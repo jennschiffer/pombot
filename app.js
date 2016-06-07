@@ -13,13 +13,18 @@ console.log('Server running on, %s:%d', host, port);
 
 app.get('/',
   function(req, res) {
+    res.status(400).send('Invalid value for "code" parameter.');
+  });
+
+app.get('/authorize',
+  function(req, res) {
 
     // get slack code
     const urlParts = url.parse(req.url, true);
     const code = urlParts.query.code || null;
 
     if (!code ) {
-      return;
+      res.redirect('/');
     }
     else {
       // slack api request opts
