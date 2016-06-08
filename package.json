@@ -7,9 +7,12 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "@slack/client": "^3.4.0",
+    "chatter": "^0.4.0",
     "dotenv": "^2.0.0",
     "express": "^4.13.4",
-    "slack": "^7.2.0"
+    "slack": "^7.2.0",
+    "sqlite3": "^3.1.4"
   },
   "devDependencies": {}
 }
