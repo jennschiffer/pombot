@@ -12,17 +12,3 @@
 
 - name: install npm modules
   npm: path="{{clone_path}}"
-
-- name: ensure location of nodejs is known
-  command: which nodejs
-  register: which_nodejs
-
-- name: ensure upstart script for app is in place
-  template:
-    src: pombot.conf
-    dest: /etc/init
-
-- name: start app
-  service:
-    name: pombot
-    state: restarted

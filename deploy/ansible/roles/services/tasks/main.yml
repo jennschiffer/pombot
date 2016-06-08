@@ -1,0 +1,9 @@
+- name: ensure upstart script for app is in place
+  template:
+    src: pombot.conf
+    dest: /etc/init
+
+- name: start app
+  service:
+    name: pombot
+    state: restarted
