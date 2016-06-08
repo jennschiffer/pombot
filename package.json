@@ -3,13 +3,21 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "get-secrets": "ssh nest.bocoup.com \"cat /mnt/secrets/pombot-slack\" > ./.env",
-    "start": "node app.js"
+    "get-secrets": "ssh nest.bocoup.com \"cat /mnt/secrets/{rds,pombot-slack,pombot-db-dev}\" > ./.env",
+    "start": "node app.js",
+    "migrate": "careen",
+    "migrate:up": "careen -A -e",
+    "migrate:down": "careen -R -e",
+    "migrate:create": "careen -C"
   },
   "dependencies": {
+    "bluebird": "^3.4.0",
+    "careen": "^0.1.1",
     "dotenv": "^2.0.0",
     "express": "^4.13.4",
+    "pg": "^5.0.0",
+    "pg-monitor": "^0.5.8",
+    "pg-promise": "^4.5.0",
     "slack": "^7.2.0"
-  },
-  "devDependencies": {}
+  }
 }
