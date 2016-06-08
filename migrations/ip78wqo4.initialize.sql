@@ -60,8 +60,8 @@ CREATE TRIGGER updated_at BEFORE UPDATE ON pom_task
 
 ---
 
-DROP TABLE slack_team;
-DROP TABLE slack_channel;
-DROP TABLE slack_user;
-DROP TABLE pom;
 DROP TABLE pom_task;
+DROP TABLE pom;
+DROP TABLE slack_user;
+DROP TABLE slack_channel;
+DROP TABLE slack_team;
