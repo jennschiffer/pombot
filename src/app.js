@@ -1,7 +1,7 @@
 const host = process.env.HOST || '0.0.0.0';
 const port = process.env.PORT || '8000';
 
-const config = require('./config');
+const config = require('./../config');
 const express = require('express');
 const app = express();
 const url = require('url');
