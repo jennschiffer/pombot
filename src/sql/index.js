@@ -1,18 +1,14 @@
-const fs = require('fs');
-const path = require('path');
 const pgp = require('pg-promise');
 
-function load(basePath) {
-  return fs.readdirSync(basePath).reduce((result, queryFile) => {
-    const query = path.basename(queryFile, '.sql');
-    const isSqlFile = query !== queryFile;
-    if (isSqlFile) {
+// build an object with keys for each query.
+// names with _ get camel cased (e.g. find_by_id becomes findById)
+const queries = pgp.utils.enumSql(__dirname, {}, function (file) {
+  return pgp.QueryFile(file, {
+    minify: true,
+    // will automatically update if file time changes without
+    // having to restart the process
+    debug: process.env.DEBUG
+  });
+});
 
-      /* eslint new-cap: [0, { "newIsCapExceptions": ["QueryFile"] }] */
-      result[query] = pgp.QueryFile(path.join(basePath, queryFile));
-    }
-    return result;
-  }, {});
-}
-
-module.exports = load(__dirname);
+module.exports = queries;
