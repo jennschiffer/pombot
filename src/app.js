@@ -2,7 +2,7 @@ import express from 'express';
 import slack from 'slack';
 import config from '../config';
 import {query} from './services/db';
-import createBot from './bot';
+import createBot from './pombot';
 
 // =================================
 // Get and set team integration data
