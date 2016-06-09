@@ -35,7 +35,7 @@ module.exports = function(grunt) {
       },
       src: {
         files: ['<%= eslint.src.src %>'],
-        tasks: ['eslint:src', 'mochaTest', 'kill', 'start'],
+        tasks: ['eslint:src', 'kill', 'start'],
       },
       root: {
         files: ['<%= eslint.root.src %>'],
@@ -43,7 +43,7 @@ module.exports = function(grunt) {
       },
       test: {
         files: ['<%= eslint.test.src %>'],
-        tasks: ['eslint:test', 'mochaTest'],
+        tasks: ['eslint:test'],
       },
       lint: {
         options: {
@@ -61,14 +61,14 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('start', function() {
-    global._BOT = spawn('node', ['--require', 'babel-register', './app'], {stdio: 'inherit'});
+    global._BOT = spawn('node', ['--require', 'babel-register', './src/app'], {stdio: 'inherit'});
   });
 
   grunt.registerTask('kill', function() {
     global._BOT.kill('SIGKILL');
   });
 
-  grunt.registerTask('test', ['eslint', 'mochaTest']);
+  grunt.registerTask('test', ['eslint']);
   grunt.registerTask('default', ['start', 'watch']);
 
   grunt.loadNpmTasks('grunt-contrib-watch');

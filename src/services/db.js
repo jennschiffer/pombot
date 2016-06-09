@@ -2,10 +2,10 @@ const bluebird = require('bluebird');
 const pgp = require('pg-promise');
 const monitor = require('pg-monitor');
 
-const config = require('../../config');
+const config = require('../config');
 
 const options = {
-  promiseLib: bluebird
+  promiseLib: bluebird,
 };
 
 if (process.env.DEBUG) {

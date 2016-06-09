@@ -1,9 +1,8 @@
 const host = process.env.HOST || '0.0.0.0';
-const port = process.env.PORT || '8000'
+const port = process.env.PORT || '8000';
 
 const config = require('./config');
 const express = require('express');
-const path = require('path');
 const app = express();
 const url = require('url');
 const slack = require('slack');
@@ -23,7 +22,7 @@ app.get('/authorize',
     const urlParts = url.parse(req.url, true);
     const code = urlParts.query.code || null;
 
-    if (!code ) {
+    if (!code) {
       res.redirect('/');
     }
     else {
@@ -31,19 +30,23 @@ app.get('/authorize',
       const args = {
         client_id: config.tokens.client_id,
         client_secret: config.tokens.client_secret,
-        code: code
+        code,
       };
 
       // get and send the api token
-      slack.oauth.access(args, function(err, data){
+      slack.oauth.access(args, function(err, data) {
+        if (!err) {
+          res.send(err);
+          return;
+        }
+
         res.send(data);
       });
     }
-
   });
 
-const sql = require('./src/sql');
-const db = require('./src/services/db');
+const sql = require('./sql');
+const db = require('./services/db');
 app.get('/migrations',
   function(req, res) {
     db.query(sql.migrations).then(result => res.send(result));
