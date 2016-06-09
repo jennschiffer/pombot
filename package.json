@@ -4,13 +4,20 @@
   "version": "0.0.1",
   "scripts": {
     "get-secrets": "ssh nest.bocoup.com \"cat /mnt/secrets/{rds,pombot-slack,pombot-db-dev}\" > ./.env",
-    "start": "node app.js",
+    "start": "babel-node ./app",
+    "start-dev": "grunt",
     "migrate": "careen",
     "migrate:up": "careen -A -e",
     "migrate:down": "careen -R -e",
     "migrate:create": "careen -C"
   },
   "dependencies": {
+    "babel-cli": "^6.8.0",
+    "babel-core": "^6.8.0",
+    "babel-plugin-transform-runtime": "^6.4.0",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-register": "^6.4.3",
+    "babel-runtime": "^6.3.19",
     "bluebird": "^3.4.0",
     "careen": "^0.1.1",
     "dotenv": "^2.0.0",
@@ -19,5 +26,11 @@
     "pg-monitor": "^0.5.8",
     "pg-promise": "^4.5.0",
     "slack": "^7.2.0"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-eslint": "^17.3.1"
   }
 }

@@ -1,0 +1,4 @@
+---
+extends:
+  - ".eslintrc-node.yaml"
+  - "./eslint/eslint-es2015.yaml"
