@@ -7,6 +7,8 @@ function load(basePath) {
     const query = path.basename(queryFile, '.sql');
     const isSqlFile = query !== queryFile;
     if (isSqlFile) {
+
+      /* eslint new-cap: [0, { "newIsCapExceptions": ["QueryFile"] }] */
       result[query] = pgp.QueryFile(path.join(basePath, queryFile));
     }
     return result;
