@@ -111,7 +111,7 @@ const db = new sqlite3.Database('bots.db');
 db.run(`
   CREATE TABLE IF NOT EXISTS bots (
     id SERIAL PRIMARY KEY,
-    token TEXT,
+    token TEXT UNIQUE,
     is_active BOOLEAN NOT NULL DEFAULT false
   )
 `);
