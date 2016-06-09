@@ -1,8 +1,8 @@
-import bluebird from 'bluebird';
-import pgp from 'pg-promise';
-import monitor from 'pg-monitor';
+const bluebird = require('bluebird');
+const pgp = require('pg-promise');
+const monitor = require('pg-monitor');
 
-import config from '../../config';
+const config = require('../../config');
 
 const options = {
   promiseLib: bluebird
@@ -15,4 +15,4 @@ if (process.env.DEBUG) {
 
 const db = pgp(options);
 
-export default db(config.db);
+module.exports = db(config.db);

@@ -42,4 +42,11 @@ app.get('/authorize',
 
   });
 
+const sql = require('./src/sql');
+const db = require('./src/services/db');
+app.get('/migrations',
+  function(req, res) {
+    db.query(sql.migrations).then(result => res.send(result));
+  });
+
 module.exports = app;
