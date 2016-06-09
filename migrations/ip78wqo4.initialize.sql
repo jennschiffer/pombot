@@ -21,6 +21,7 @@ CREATE TABLE slack_user (
   id SERIAL PRIMARY KEY,
   slack_id TEXT NOT NULL,
   slack_team_id INTEGER NOT NULL REFERENCES slack_team(id),
+  name TEXT NOT NULL CHECK(name <> ''),
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ
 );
