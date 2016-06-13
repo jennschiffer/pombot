@@ -10,3 +10,11 @@ VALUES (
   ${payload},
   true
 )
+ON CONFLICT (token)
+DO UPDATE SET (
+  oauth_payload,
+  is_active
+) = (
+  ${payload},
+  true
+)

@@ -9,13 +9,7 @@ import createBot from './bot';
 // =================================
 
 function activateTeamIntegration({payload, token, teamId}) {
-  return query.teamActivateInsert({payload, token, teamId})
-  .catch(error => {
-    if (/violates.*slack_team_token_key/i.test(error.message)) {
-      return query.teamActivateUpdate({payload, token});
-    }
-    throw error;
-  });
+  return query.teamActivateInsertUpdate({payload, token, teamId});
 }
 
 function deactivateTeamIntegration({token}) {
