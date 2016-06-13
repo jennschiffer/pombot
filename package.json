@@ -7,6 +7,7 @@
     "db": "source .env && PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -p $DB_PORT -U $DB_USER $DB_NAME",
     "start": "babel-node ./app",
     "start-dev": "grunt",
+    "test": "grunt test",
     "migrate": "careen",
     "migrate:up": "careen -A -e",
     "migrate:down": "careen -R -e",
