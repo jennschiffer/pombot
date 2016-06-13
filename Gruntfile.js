@@ -18,12 +18,12 @@ module.exports = function(grunt) {
         },
         src: '*.js',
       },
-      test: {
-        options: {
-          configFile: '.eslintrc-mocha.yaml',
-        },
-        src: 'test/**/*.js',
-      },
+      // test: {
+      //   options: {
+      //     configFile: '.eslintrc-mocha.yaml',
+      //   },
+      //   src: 'test/**/*.js',
+      // },
     },
     watch: {
       options: {
@@ -41,10 +41,10 @@ module.exports = function(grunt) {
         files: ['<%= eslint.root.src %>'],
         tasks: ['eslint:root'],
       },
-      test: {
-        files: ['<%= eslint.test.src %>'],
-        tasks: ['eslint:test'],
-      },
+      // test: {
+      //   files: ['<%= eslint.test.src %>'],
+      //   tasks: ['eslint:test'],
+      // },
       lint: {
         options: {
           reload: true,
