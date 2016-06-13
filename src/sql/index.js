@@ -10,7 +10,7 @@ const queries = utils.enumSql(__dirname, {}, file => {
     minify: true,
     // will automatically update if file time changes without
     // having to restart the process
-    debug: process.env.DEBUG
+    debug: process.env.DEBUG,
   });
 });
 
