@@ -25,3 +25,13 @@ export const query = Object.keys(sql).reduce((memo, key) => {
   memo[key] = (...args) => db.query(sql[key], ...args);
   return memo;
 }, {});
+
+export const oneOrNone = Object.keys(sql).reduce((memo, key) => {
+  memo[key] = (...args) => db.oneOrNone(sql[key], ...args);
+  return memo;
+}, {});
+
+export const one = Object.keys(sql).reduce((memo, key) => {
+  memo[key] = (...args) => db.one(sql[key], ...args);
+  return memo;
+}, {});

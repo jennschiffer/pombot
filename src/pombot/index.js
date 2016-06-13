@@ -28,12 +28,13 @@ export default function createBot(token) {
       const name = channel.is_im ? null : 'pom';
       // Helper method to format the given command name.
       const getCommand = cmd => name ? `${name} ${cmd}` : cmd;
-      // The message handler.
+
       const messageHandler = createArgsAdjuster({
-        // Inject pom instance and getCommand helper into message handler 2nd
+        // Inject getCommand helper into message handler 2nd
         // (meta) argument.
         adjustArgs(message, meta) {
           meta.getCommand = getCommand;
+          meta.token = token;
           return [message, meta];
         },
       }, createCommand({

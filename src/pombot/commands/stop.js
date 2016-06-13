@@ -2,26 +2,23 @@
  * The `stop` command, which stops a Pom.
  */
 import {createCommand} from 'chatter';
-import sql from '../../sql';
-import db from '../../services/db';
+import lookupPom from '../lib/lookup-pom';
 
 export default createCommand({
   name: 'stop',
   description: 'Stops the current pom.',
-}, (message, {channel, getCommand}) => {
+}, (message, {channel, token, getCommand}) => {
 
-  // get current pom in current channel
-  db.query(sql.get_current_pom, channel.id).then(result => {
+  // look up pom
+  return lookupPom(token, channel.id).then(res => {
 
-    // if there is a pom that's started and is not complete, stop and show status
-    if (result && result.startedAt && !result.isComplete) {
-      // TODO get the time left Z in current pom
-      db.query(sql.update_stop_pom, result.id);
-      return `:tomato: the pom has been stopped with *Z* remaining.`;
+    // if pom exists, TODO stop it
+    if (res) {
+      return `pom already exists with id ${res}`;
+      // return `:tomato: the pom has been stopped with *Z* remaining.`;
     }
 
-    // there's no pom to stop
+    // there's no existing pom to stop
     return `there is no pom currently running – start one with the command \`${getCommand('start')}\``;
   });
-
 });

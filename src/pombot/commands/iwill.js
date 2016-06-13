@@ -1,16 +1,31 @@
 /*
  * A stub for the "i will" command.
  */
-import heredoc from 'heredoc-tag';
 import {createCommand} from 'chatter';
-import db from '../../services/db';
+import lookupPom from '../lib/lookup-pom';
 
 export default createCommand({
   name: 'i will',
   description: 'Records a users task for the next pom.',
-}, (message, {user, channel, pomId, getCommand}) => {
+}, (message, {user, channel, token, getCommand}) => {
 
-  db.query('SELECT * FROM pom WHERE id=$1', pomId, 1).then(result => {
+  // look up pom
+  return lookupPom(token, channel.id).then(res => {
+
+    // if pom exists, TODO check if running and if not add the task
+    if (res) {
+      return `pom already exists with id ${res}`;
+      // return `:tomato: the pom has been stopped with *Z* remaining.`;
+    }
+
+    // if pom doesn't exist, TODO create and then add task
+    return query.createPom({slack_channel_id: channel.id}).then(newPom => {
+      return `pom just created with id ${newPom[0].id}`; // REVIEW return id [].id seems weird
+      // return `:tomato: pom started – you have *Z* left!`;
+    });
+  });
+
+/*  db.query('SELECT * FROM pom WHERE id=$1', pomId, 1).then(result => {
 
     if (result.startedAt && !result.isComplete) {
       // TODO get the time left Z in current pom
@@ -19,7 +34,7 @@ export default createCommand({
 
     // if pom is not running or is on break, let user record task
 
-    /*
+
       4. user.name enters a pom_task with the description message
 
       check if record for user's slack_user id exists
@@ -34,12 +49,13 @@ export default createCommand({
         if not, enter it
         INSERT INTO pom_task (pom_id, slack_user_id, description) VALUES ([pom_id], [slack_user_id], message);
 
-    */
+
 
     return heredoc.oneline.trim`
       ${user.name}'s task for the next pom is "${message}".
       You can start this pom with the command \`${getCommand('start')}\`
     `;
   });
+  */
 
 });

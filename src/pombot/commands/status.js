@@ -3,34 +3,36 @@
  */
 import heredoc from 'heredoc-tag';
 import {createCommand} from 'chatter';
-import db from '../../services/db';
+import lookupPom from '../lib/lookup-pom';
 
 export default createCommand({
   name: 'status',
   description: 'Displays the status of the current pom.',
-}, (message, {channel, pomId, getCommand}) => {
+}, (message, {channel, token, getCommand}) => {
 
-  db.query('SELECT * FROM pom WHERE id=$1', pomId, 1).then(result => {
-    // TODO retrieve any tasks in this pom.
-    const taskList = [];
-    // for (const user in pom.taskCollection) {
-    //  taskList.push(`> ${user} will ${pom.taskCollection[user]}`);
-    // }
-    const taskHeader = (taskList.length > 0) ? 'here is the task list:' : 'there are no tasks declared.';
+  // look up pom
+  return lookupPom(token, channel.id).then(res => {
 
-    if (result.startedAt && !result.isComplete) {
-      // TODO get the time left Z in current pom
-      // TODO get the list of tasks in the current pom
-      return `a pom is currently running with *Z* left and ${taskHeader}`;
+    // if pom exists, TODO get status
+    if (res) {
+      return `status of pom: id is ${res}`;
+      /*
+        // retrieve any tasks in this pom.
+        const taskList = [];
+        // for (const user in pom.taskCollection) {
+        //  taskList.push(`> ${user} will ${pom.taskCollection[user]}`);
+        // }
+        const taskHeader = (taskList.length > 0) ? 'here is the task list:' : 'there are no tasks declared.';
+
+        if (result.startedAt && !result.isComplete) {
+          // get the time left Z in current pom
+          // get the list of tasks in the current pom
+          return `a pom is currently running with *Z* left and ${taskHeader}`;
+        }
+      */
     }
 
-    return [
-      heredoc.oneline.trim`
-        there is no pom currently running – start one with the command \`${getCommand('start')}\`.
-        ${taskHeader}
-      `,
-      taskList,
-    ];
+    // there's no existing pom to check the status of
+    return `there is no pom currently running – start one with the command \`${getCommand('start')}\``;
   });
-
 });

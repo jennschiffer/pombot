@@ -11,7 +11,7 @@ CREATE TABLE slack_team (
 CREATE TABLE slack_channel (
   id SERIAL PRIMARY KEY,
   slack_id TEXT NOT NULL,
-  slack_team_id INTEGER NOT NULL REFERENCES slack_team(id),
+  slack_team_id TEXT NOT NULL REFERENCES slack_team(id),
   name TEXT NOT NULL CHECK(name <> ''),
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ
@@ -20,7 +20,7 @@ CREATE TABLE slack_channel (
 CREATE TABLE slack_user (
   id SERIAL PRIMARY KEY,
   slack_id TEXT NOT NULL,
-  slack_team_id INTEGER NOT NULL REFERENCES slack_team(id),
+  slack_team_id TEXT NOT NULL REFERENCES slack_team(id),
   name TEXT NOT NULL CHECK(name <> ''),
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ
@@ -28,7 +28,7 @@ CREATE TABLE slack_user (
 
 CREATE TABLE pom (
   id SERIAL PRIMARY KEY,
-  slack_channel_id INTEGER NOT NULL REFERENCES slack_channel(id),
+  slack_channel_id TEXT NOT NULL REFERENCES slack_channel(id),
   started_at TIMESTAMPTZ,
   length interval NOT NULL DEFAULT '25 minutes',
   is_completed BOOLEAN NOT NULL DEFAULT false,
@@ -39,7 +39,7 @@ CREATE TABLE pom (
 CREATE TABLE pom_task (
   id SERIAL PRIMARY KEY,
   pom_id INTEGER NOT NULL REFERENCES pom(id),
-  slack_user_id INTEGER NOT NULL REFERENCES slack_user(id),
+  slack_user_id TEXT NOT NULL REFERENCES slack_user(id),
   description TEXT NOT NULL CHECK(description <> ''),
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ
@@ -59,10 +59,6 @@ CREATE TRIGGER updated_at BEFORE UPDATE ON pom
 
 CREATE TRIGGER updated_at BEFORE UPDATE ON pom_task
   FOR EACH ROW EXECUTE PROCEDURE updated_at();
-
--- init test records: slack id 42, team id 1, channel id 21, token "test-token-wow"
--- INSERT INTO slack_team (token, slack_id, oauth_payload, is_active) VALUES ('test-token-wow', 42, 'example payload', true);
--- INSERT INTO slack_channel (slack_channel_id, slack_team_id, name) VALUES (21, 1, 'general');
 
 ---
 
