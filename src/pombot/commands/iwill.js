@@ -3,6 +3,7 @@
  */
 import {createCommand} from 'chatter';
 import lookupPom from '../lib/lookup-pom';
+import {one} from '../../services/db';
 
 export default createCommand({
   name: 'i will',
@@ -19,8 +20,8 @@ export default createCommand({
     }
 
     // if pom doesn't exist, TODO create and then add task
-    return query.createPom({slack_channel_id: channel.id}).then(newPom => {
-      return `pom just created with id ${newPom[0].id}`; // REVIEW return id [].id seems weird
+    return one.createPom({slack_channel_id: channel.id}).then(newPom => {
+      return `pom just created with id ${newPom.id}`;
       // return `:tomato: pom started – you have *Z* left!`;
     });
   });
@@ -48,8 +49,6 @@ export default createCommand({
 
         if not, enter it
         INSERT INTO pom_task (pom_id, slack_user_id, description) VALUES ([pom_id], [slack_user_id], message);
-
-
 
     return heredoc.oneline.trim`
       ${user.name}'s task for the next pom is "${message}".

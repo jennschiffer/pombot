@@ -3,8 +3,9 @@
  */
 
 import {createCommand} from 'chatter';
-import {query} from '../../services/db';
+import {query, one} from '../../services/db';
 import lookupPom from '../lib/lookup-pom';
+import getTimeString from '../lib/get-time-string';
 
 export default createCommand({
   name: 'start',
@@ -12,18 +13,28 @@ export default createCommand({
 }, (message, {channel, token}) => {
 
   // look up pom
-  return lookupPom(token, channel.id).then(res => {
+  return lookupPom(token, channel.id).then(pomId => {
+    // if pom exists check if it is already running or update with start time
+    if (pomId) {
 
-    // if pom exists, TODO check if already running or update with start time
-    if (res) {
-      return `pom already exists with id ${res}`;
-      // return `there is already a pom running with *Z* left.`;
+      return one.getPomById({pomId}).then(pomRes => {
+
+        if (pomRes.started_at && !pomRes.is_completed) {
+          const timeLeft = getTimeString(pomRes.date_part);
+          return `there is already a pom running with *${timeLeft}* left.`;
+        }
+
+        return query.startPom({slack_channel_id: channel.id}).then(startRes => {
+          const timeLeft = getTimeString(startRes.date_part);
+          return `:tomato: pom started – you have *${timeLeft}* left!`;
+        });
+      });
     }
 
-    // if pom doesn't exist, TODO create with start time
-    return query.createPom({slack_channel_id: channel.id}).then(newPom => {
-      return `pom just created with id ${newPom[0].id}`; // REVIEW return id [].id seems weird
-      // return `:tomato: pom started – you have *Z* left!`;
+    // if pom doesn't exist, create with start time
+    return one.startPom({slack_channel_id: channel.id}).then(newPom => {
+      const timeLeft = getTimeString(newPom.date_part);
+      return `:tomato: pom started – you have *${timeLeft}* left!`;
     });
   });
 

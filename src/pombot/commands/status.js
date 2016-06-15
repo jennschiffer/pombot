@@ -1,7 +1,6 @@
 /*
  * The `status` command, which describes the status of a current Pom.
  */
-import heredoc from 'heredoc-tag';
 import {createCommand} from 'chatter';
 import lookupPom from '../lib/lookup-pom';
 
@@ -16,6 +15,7 @@ export default createCommand({
     // if pom exists, TODO get status
     if (res) {
       return `status of pom: id is ${res}`;
+
       /*
         // retrieve any tasks in this pom.
         const taskList = [];

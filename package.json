@@ -27,6 +27,7 @@
     "dotenv": "^2.0.0",
     "express": "^4.13.4",
     "heredoc-tag": "^0.1.0",
+    "moment": "^2.13.0",
     "pg": "^5.0.0",
     "pg-monitor": "^0.5.8",
     "pg-promise": "^4.5.0",

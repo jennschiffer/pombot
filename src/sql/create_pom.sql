@@ -1,9 +1,7 @@
 INSERT INTO pom (
-  slack_channel_id,
-  started_at
+  slack_channel_id
 )
 VALUES (
-  (SELECT id FROM slack_channel WHERE slack_id=${slack_channel_id}),
-  CURRENT_TIMESTAMP
+  (SELECT id FROM slack_channel WHERE slack_id=${slack_channel_id})
 )
 RETURNING id
