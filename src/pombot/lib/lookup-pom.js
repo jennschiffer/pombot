@@ -25,7 +25,7 @@ const lookupPom = function(token, channelId) {
       query.createChannel({
         slack_channel_id: channelId,
         slack_team_id: team.id,
-        name: 'EXAMPLE CHANNEL NAME', // TODO get channel name
+        name: 'EXAMPLE CHANNEL NAME', // TODO get channel name?
       }).then(getPomId);
     }).catch(res => {
       console.log('error: team does not exist'); // REVIEW how to catch better?

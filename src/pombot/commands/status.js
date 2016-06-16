@@ -2,7 +2,7 @@
  * The `status` command, which describes the status of a current Pom.
  */
 import {createCommand} from 'chatter';
-import {one, query} from '../../services/db';
+import {one} from '../../services/db';
 import lookupPom from '../lib/lookup-pom';
 import getTimeString from '../lib/get-time-string';
 
@@ -26,16 +26,10 @@ export default createCommand({
 
 
       return one.getPomById({pomId}).then(pomRes => {
-
         if (pomRes.started_at && !pomRes.is_completed) {
           const timeLeft = getTimeString(pomRes.date_part);
           return `a pom is currently running with *${timeLeft}* left and ${taskHeader}`;
         }
-
-        return query.startPom({slack_channel_id: channel.id}).then(startRes => {
-          const timeLeft = getTimeString(startRes.date_part);
-          return `:tomato: pom started – you have *${timeLeft}* left!`;
-        });
       });
     }
 

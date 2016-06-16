@@ -32,6 +32,7 @@ CREATE TABLE pom (
   started_at TIMESTAMPTZ,
   length interval NOT NULL DEFAULT '25 minutes',
   is_completed BOOLEAN NOT NULL DEFAULT false,
+  is_alerted BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ
 );
@@ -42,7 +43,8 @@ CREATE TABLE pom_task (
   slack_user_id INTEGER NOT NULL REFERENCES slack_user(id),
   description TEXT NOT NULL CHECK(description <> ''),
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMPTZ
+  updated_at TIMESTAMPTZ,
+  UNIQUE(pom_id, slack_user_id)
 );
 
 CREATE TRIGGER updated_at BEFORE UPDATE ON slack_team

@@ -3,7 +3,7 @@
  */
 
 import {createCommand} from 'chatter';
-import {query, one} from '../../services/db';
+import {one} from '../../services/db';
 import lookupPom from '../lib/lookup-pom';
 import getTimeString from '../lib/get-time-string';
 
@@ -16,15 +16,13 @@ export default createCommand({
   return lookupPom(token, channel.id).then(pomId => {
     // if pom exists check if it is already running or update with start time
     if (pomId) {
-
       return one.getPomById({pomId}).then(pomRes => {
-
         if (pomRes.started_at && !pomRes.is_completed) {
           const timeLeft = getTimeString(pomRes.date_part);
           return `there is already a pom running with *${timeLeft}* left.`;
         }
 
-        return query.startPom({slack_channel_id: channel.id}).then(startRes => {
+        return one.startPom({slack_channel_id: channel.id}).then(startRes => {
           const timeLeft = getTimeString(startRes.date_part);
           return `:tomato: pom started – you have *${timeLeft}* left!`;
         });
