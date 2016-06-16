@@ -2,38 +2,32 @@
  * The `status` command, which describes the status of a current Pom.
  */
 import {createCommand} from 'chatter';
-import {one} from '../../services/db';
-import lookupPom from '../lib/lookup-pom';
-import getTimeString from '../lib/get-time-string';
+import lookupPomId from '../lib/lookup-pom-id';
+import getPom from '../lib/get-pom';
 
 export default createCommand({
   name: 'status',
   description: 'Displays the status of the current pom.',
 }, (message, {channel, token, getCommand}) => {
 
-  // look up pom
-  return lookupPom(token, channel.id).then(pomId => {
-
-    // if pom exists, show time left and any tasks for it
+  // look up pom with token and channel id
+  return lookupPomId(token, channel.id).then(pomId => {
     if (pomId) {
 
-      // TODO retrieve any tasks that exist for this pomId
-      const taskList = [];
-      // for (const user in pom.taskCollection) {
-      //  taskList.push(`> ${user} will ${pom.taskCollection[user]}`);
-      // }
-      const taskHeader = (taskList.length > 0) ? 'here is the task list:' : 'there are no tasks declared.';
+      // get the info from the pom and print out
+      return getPom(pomId).then(pomRes => {
+        const taskHeader = (pomRes.tasks.length > 0) ? 'here is the task list:' : 'there are no tasks declared.';
 
-
-      return one.getPomById({pomId}).then(pomRes => {
-        if (pomRes.started_at && !pomRes.is_completed) {
-          const timeLeft = getTimeString(pomRes.date_part);
-          return `a pom is currently running with *${timeLeft}* left and ${taskHeader}`;
+        if (pomRes.timeRemaining && !pomRes.is_completed) {
+          return [`a pom is currently running with *${pomRes.timeRemaining}* left and ${taskHeader}`, pomRes.tasks];
         }
+
+        return [`there is no pom currently running - start one with the command ` +
+          `\`${getCommand('start')}\`. as for the next pom, ${taskHeader}`, pomRes.tasks];
       });
     }
 
-    // there's no existing pom to check the status of
+    // otherwise let user know there's no running pom
     return `there is no pom currently running – start one with the command \`${getCommand('start')}\``;
   });
 });

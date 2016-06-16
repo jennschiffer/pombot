@@ -2,9 +2,15 @@
  * The `stop` command, which stops a Pom.
  */
 import {createCommand} from 'chatter';
-import {query} from '../../services/db';
-import lookupPom from '../lib/lookup-pom';
+import {one} from '../../services/db';
+import lookupPomId from '../lib/lookup-pom-id';
 import getTimeString from '../lib/get-time-string';
+import errorCatch from '../lib/error-catch';
+
+function stopPom(pomId) {
+  // stops pom and returns time left in seconds
+  return one.stopPomById({pomId}).get('seconds_remaining');
+}
 
 export default createCommand({
   name: 'stop',
@@ -12,14 +18,13 @@ export default createCommand({
 }, (message, {channel, token, getCommand}) => {
 
   // look up pom
-  return lookupPom(token, channel.id).then(pomId => {
+  return lookupPomId(token, channel.id).then(pomId => {
 
-    // if pom exists
+    // if pom exists stop it and let user know how much time remained
     if (pomId) {
-      return query.stopPom({pomId}).then(stopRes => {
-        const timeLeft = getTimeString(stopRes[0].date_part); // REVIEW avoid array in this select?
-        return `:tomato: the pom has been stopped with *${timeLeft}* remaining.`;
-      });
+      return stopPom(pomId).then(timeLeft => {
+        return `:tomato: the pom has been stopped with *${getTimeString(timeLeft)}* remaining.`;
+      }).catch(res => errorCatch(res, 'stop->stopPom', 'failed to stop the current pom'));
     }
 
     // there's no existing pom to stop

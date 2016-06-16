@@ -4,14 +4,12 @@
 * returns pom record id if it exists, null if not
 */
 import {one, query} from '../../services/db';
+import errorCatch from './error-catch';
 
 // helper to get pom id
 const getPomId = function(channelId) {
-  // check for pom in db
-  return one.getCurrentPom({slack_channel_id: channelId.slack_id}).get('id').catch(pomRes => {
-    // pom doesn't exist
-    return false;
-  });
+  // check for pom in db, return false if it doesn't exist
+  return one.getCurrentPom({slack_channel_id: channelId.slack_id}).get('id').catch(res => { return false;});
 };
 
 // takes the slack channel id and returns a pom's id
@@ -25,11 +23,9 @@ const lookupPom = function(token, channelId) {
       query.createChannel({
         slack_channel_id: channelId,
         slack_team_id: team.id,
-        name: 'EXAMPLE CHANNEL NAME', // TODO get channel name?
-      }).then(getPomId);
-    }).catch(res => {
-      console.log('error: team does not exist'); // REVIEW how to catch better?
-    });
+        name: 'EXAMPLE CHANNEL NAME', // TODO get channel name? is this even needed?
+      }).then(getPomId).catch(res => errorCatch(res, 'lib/lookupPom->createChannel', 'failed to create channel'));
+    }).catch(res => errorCatch(res, 'lib/lookupPom->getTeamByToken', 'failed to get team with given token'));
   });
 };
 

@@ -2,29 +2,39 @@
  * A stub for the "i will" command.
  */
 import {createCommand} from 'chatter';
-import lookupPom from '../lib/lookup-pom';
+import lookupPomId from '../lib/lookup-pom-id';
 import {one, query} from '../../services/db';
-import getTimeString from '../lib/get-time-string';
+import errorCatch from '../lib/error-catch';
+import getPom from '../lib/get-pom';
+
+// helper to assign task to user
+function assignTaskToUser(pomId, userSlackId, message) {
+  return query.assignTask({
+    pomId,
+    userSlackId,
+    message,
+  });
+}
+
+// helper to create pom
+function createPom(slackChannelId) {
+  return one.createPomBySlackChannelId({slack_channel_id: slackChannelId})
+    .then(newPomRes => newPomRes)
+    .catch(pomRes => errorCatch(pomRes, 'iwill->createPom', 'failed to create pom'));
+}
 
 // helper to create task
-const addTaskToPom = function(pomId, token, userSlackId, userName, message, getCommand) {
+function addTaskToPom(pomId, token, userSlackId, userName, message, getCommand) {
 
   // if user exists, assign this task
   return one.getUserBySlackId({userSlackId}).then(user => {
     // add or update task for this pom
-    return query.assignTask({
-      pomId,
-      userSlackId: user.id,
-      message,
-    }).then(taskRes => {
-
+    return assignTaskToUser(pomId, user.id, message).then(taskRes => {
       // let user know task was assigned
       return `${userName}'s task for the next pom is "${message}".` +
         ` You can start this pom with the command \`${getCommand('start')}\``;
-    }).catch(taskRes => {
-      console.log('task assignment failed', taskRes);
-      return 'task assignment failed';
-    });
+    }).catch(res => errorCatch(res, 'iwill->assignTask', 'failed to assign task to user'));
+
   }).catch(res => {
     // user doesn't exist so add them, first getting team id
     return one.getTeamByToken({token}).then(team => {
@@ -37,29 +47,16 @@ const addTaskToPom = function(pomId, token, userSlackId, userName, message, getC
       }).then(newUser => {
 
         // assign task to new user
-        return query.assignTask({
-          pomId,
-          userSlackId: newUser.id,
-          message,
-        }).then(taskRes => {
-
+        return assignTaskToUser(pomId, newUser.id, message).then(taskRes => {
           // let user know task was assigned
           return `${userName}'s task for the next pom is "${message}".` +
             ` You can start this pom with the command \`${getCommand('start')}\``;
-        }).catch(taskRes => {
-          console.log('task assignment failed', taskRes);
-          return 'task assignment failed';
-        });
-      }).catch(newUser => {
-        console.log('new user creation failed', newUser);
-        return 'new user creation failed';
-      });
-    }).catch(teamRes => {
-      console.log('error: team does not exist', teamRes); // REVIEW how to catch better?
-      return 'team failure';
-    });
+
+        }).catch(taskRes => errorCatch(taskRes, 'iwill->assignTask', 'failed to assign task to new user'));
+      }).catch(userRes => errorCatch(userRes, 'iwill->createUser', 'failed to create new user'));
+    }).catch(teamRes => errorCatch(teamRes, 'iwill->getTeamByToken', 'failed to get team with given token'));
   });
-};
+}
 
 export default createCommand({
   name: 'i will',
@@ -67,34 +64,25 @@ export default createCommand({
 }, (message, {user, channel, token, getCommand}) => {
 
   // look up pom
-  return lookupPom(token, channel.id).then(pomId => {
+  return lookupPomId(token, channel.id).then(pomId => {
 
     // if pom exists check if it is already running or update with start time
     if (pomId) {
-      return one.getPomById({pomId}).then(pomRes => {
+      return getPom(pomId).then(pomRes => {
 
         // if pom exists and it's running, let user know they can't update tasks
-        if (pomRes.started_at && !pomRes.is_completed) {
-          const timeLeft = getTimeString(pomRes.date_part);
-          return `it's too late to declare a task, a pom is already running with *${timeLeft}* left.`;
+        if (pomRes.timeRemaining && !pomRes.is_completed) {
+          return `it's too late to declare a task, a pom is already running with *${pomRes.timeRemaining}* left.`;
         }
 
         // add task to this unstarted pom ID
         return addTaskToPom(pomId, token, user.id, user.name, message, getCommand);
-      }).catch(pomRes => {
-        console.log('getting pom failed', pomRes);
-        return 'getting pom failed';
       });
     }
 
-    // if pom doesn't exist, create pom (but don't start it)
-    return one.createPom({slack_channel_id: channel.id}).then(newPom => {
-
-      // add task to new pom
+    // if pom doesn't exist, create pom and then add task
+    return createPom(channel.id).then(newPom => {
       return addTaskToPom(newPom.id, token, user.id, user.name, message, getCommand);
-    }).catch(newPomId => {
-      console.log('creating pom failed', newPomId);
-      return 'creating pom failed';
     });
   });
 
