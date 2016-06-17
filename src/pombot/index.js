@@ -7,8 +7,10 @@ import stopCommand from './commands/stop';
 import statusCommand from './commands/status';
 import iwillCommand from './commands/iwill';
 
-export default function createBot(token) {
+// timer
+import checkTimer from './lib/check-timer';
 
+export default function createBot(token) {
   // create bot
   return createSlackBot({
     name: 'Pombot',
@@ -28,6 +30,21 @@ export default function createBot(token) {
       const name = channel.is_im ? null : 'pom';
       // Helper method to format the given command name.
       const getCommand = cmd => name ? `${name} ${cmd}` : cmd;
+
+      // Start the timer for this bot
+      setInterval(() => {
+        checkTimer(
+          timeString => {
+            // on alerted callback, tell user time left
+            this.postMessage(channel.id, `:tomato: you have *${timeString}* left in this pom!`);
+          },
+          () => {
+            // on completed callback, tell user pom's completed
+            this.postMessage(channel.id, ':tomato: pom completed!');
+          }
+        );
+      }, 3000);
+
 
       const messageHandler = createArgsAdjuster({
         // Inject getCommand helper into message handler 2nd
