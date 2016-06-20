@@ -5,7 +5,7 @@ import {createCommand} from 'chatter';
 import lookupPomId from '../lib/lookup-pom-id';
 import {one, query} from '../../services/db';
 import errorCatch from '../lib/error-catch';
-import getPom from '../lib/get-pom';
+import getPom, {isPomRunning} from '../lib/get-pom';
 
 // helper to assign task to user
 function assignTaskToUser(pomId, userSlackId, userName, message, getCommand) {
@@ -64,7 +64,7 @@ export default createCommand({
       return getPom(pomId).then(pomRes => {
 
         // if pom exists and it's running, let user know they can't update tasks
-        if (pomRes.timeRemaining && !pomRes.is_completed) {
+        if (isPomRunning(pomRes)) {
           return `it's too late to declare a task, a pom is already running with *${pomRes.timeRemaining}* left.`;
         }
 

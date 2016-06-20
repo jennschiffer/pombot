@@ -21,17 +21,17 @@ export const db = pgp(config.db);
 
 // Create a per-sql query method that can be called like query.migrations()
 // instead of db.query(sql.migrations).
-export const query = Object.keys(sql).reduce((memo, key) => {
-  memo[key] = (...args) => db.query(sql[key], ...args);
-  return memo;
-}, {});
+function createQueryWrapper(methodName) {
+  return Object.keys(sql).reduce((memo, key) => {
+    memo[key] = (...args) => db[methodName](sql[key], ...args);
+    return memo;
+  }, {});
+}
 
-export const oneOrNone = Object.keys(sql).reduce((memo, key) => {
-  memo[key] = (...args) => db.oneOrNone(sql[key], ...args);
-  return memo;
-}, {});
-
-export const one = Object.keys(sql).reduce((memo, key) => {
-  memo[key] = (...args) => db.one(sql[key], ...args);
-  return memo;
-}, {});
+export const query = createQueryWrapper('query');
+export const many = createQueryWrapper('many');
+export const one = createQueryWrapper('one');
+export const none = createQueryWrapper('none');
+export const any = createQueryWrapper('any');
+export const oneOrNone = createQueryWrapper('oneOrNone');
+export const manyOrNone = createQueryWrapper('manyOrNone');

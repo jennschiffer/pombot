@@ -3,7 +3,7 @@
  */
 import {createCommand} from 'chatter';
 import lookupPomId from '../lib/lookup-pom-id';
-import getPom from '../lib/get-pom';
+import getPom, {isPomRunning} from '../lib/get-pom';
 
 export default createCommand({
   name: 'status',
@@ -18,7 +18,7 @@ export default createCommand({
       return getPom(pomId).then(pomRes => {
         const taskHeader = (pomRes.tasks.length > 0) ? 'here is the task list:' : 'there are no tasks declared.';
 
-        if (pomRes.timeRemaining && !pomRes.is_completed) {
+        if (isPomRunning(pomRes)) {
           return [`a pom is currently running with *${pomRes.timeRemaining}* left and ${taskHeader}`, pomRes.tasks];
         }
 
