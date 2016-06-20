@@ -6,7 +6,7 @@
     "get-secrets": "ssh nest.bocoup.com \"cat /mnt/secrets/{rds,pombot-slack,pombot-db-dev}\" > ./.env",
     "db": "source .env && PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -p $DB_PORT -U $DB_USER $DB_NAME",
     "start": "babel-node ./app",
-    "start-dev": "grunt",
+    "start-dev": "NOCACHE_SQL=1 grunt",
     "test": "grunt test",
     "migrate": "careen",
     "migrate:up": "careen -A -e",

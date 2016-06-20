@@ -61,12 +61,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('start', function() {
-    global._BOT = spawn('node', ['--require', 'babel-register', './src/app'], {
-      stdio: 'inherit',
-      env: Object.assign({}, process.env, {
-        NOCACHE_SQL: 1,
-      }),
-    });
+    global._BOT = spawn('node', ['--require', 'babel-register', './src/app'], {stdio: 'inherit'});
   });
 
   grunt.registerTask('kill', function() {
