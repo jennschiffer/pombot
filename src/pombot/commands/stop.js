@@ -2,15 +2,9 @@
  * The `stop` command, which stops a Pom.
  */
 import {createCommand} from 'chatter';
-import {one} from '../../services/db';
-import lookupPomId from '../lib/lookup-pom-id';
+import {lookupPom, stopPom} from '../lib/poms';
 import getTimeString from '../lib/get-time-string';
 import getErrorHandler from '../lib/get-error-handler';
-
-function stopPom(pomId) {
-  // stops pom and returns time left in seconds
-  return one.stopPomById({pomId}).get('seconds_remaining');
-}
 
 export default createCommand({
   name: 'stop',
@@ -18,7 +12,7 @@ export default createCommand({
 }, (message, {channel, token, getCommand}) => {
 
   // look up pom
-  return lookupPomId(token, channel.id).then(pomId => {
+  return lookupPom(token, channel.id).then(pomId => {
 
     // if pom exists stop it and let user know how much time remained
     if (pomId) {

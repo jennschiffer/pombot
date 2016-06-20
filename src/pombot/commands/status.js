@@ -2,8 +2,7 @@
  * The `status` command, which describes the status of a current Pom.
  */
 import {createCommand} from 'chatter';
-import lookupPomId from '../lib/lookup-pom-id';
-import getPom, {isPomRunning} from '../lib/get-pom';
+import {lookupPom, getPom, isPomRunning} from '../lib/poms';
 
 export default createCommand({
   name: 'status',
@@ -11,7 +10,7 @@ export default createCommand({
 }, (message, {channel, token, getCommand}) => {
 
   // look up pom with token and channel id
-  return lookupPomId(token, channel.id).then(pomId => {
+  return lookupPom(token, channel.id).then(pomId => {
     if (pomId) {
 
       // get the info from the pom and print out

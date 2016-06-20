@@ -3,22 +3,7 @@
  */
 
 import {createCommand} from 'chatter';
-import {one} from '../../services/db';
-import lookupPomId from '../lib/lookup-pom-id';
-import getErrorHandler from '../lib/get-error-handler';
-import getPom, {isPomRunning} from '../lib/get-pom';
-import getTimeString from '../lib/get-time-string';
-
-function startPom(slackChannelId) {
-  // start or create pom from slack channel id and return id and time left
-  return one.startPomBySlackChannelId({slack_channel_id: slackChannelId})
-    .then(startRes => {
-      return Object.assign(startRes, {
-        timeRemaining: getTimeString(startRes.seconds_remaining),
-      });
-    })
-    .catch(getErrorHandler('start->startPom', 'failed to start pom'));
-}
+import {lookupPom, getPom, isPomRunning, startPom} from '../lib/poms';
 
 export default createCommand({
   name: 'start',
@@ -26,7 +11,7 @@ export default createCommand({
 }, (message, {channel, token}) => {
 
   // look up pom
-  return lookupPomId(token, channel.id).then(pomId => {
+  return lookupPom(token, channel.id).then(pomId => {
     if (pomId) {
       // get the info from the pom and print out
       return getPom(pomId).then(pomRes => {

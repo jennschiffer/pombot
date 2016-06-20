@@ -2,54 +2,8 @@
  * The `i will` command, which creates a Task for a User before a Pom.
  */
 import {createCommand} from 'chatter';
-import lookupPomId from '../lib/lookup-pom-id';
-import {one, query} from '../../services/db';
-import getErrorHandler from '../lib/get-error-handler';
-import getPom, {isPomRunning} from '../lib/get-pom';
-
-// helper to assign task to user
-function assignTaskToUser(pomId, userSlackId, userName, message, getCommand) {
-  return query.assignTask({
-    pomId,
-    userSlackId,
-    message,
-  }).then(taskRes => {
-    return `${userName}'s task for the next pom is "${message}".` +
-      ` You can start this pom with the command \`${getCommand('start')}\``;
-  }).catch(getErrorHandler('iwill->assignTaskToUser', 'failed to assign task to user'));
-}
-
-// helper to create pom
-function createPom(slackChannelId) {
-  return one.createPomBySlackChannelId({slack_channel_id: slackChannelId})
-    .catch(getErrorHandler('iwill->createPom', 'failed to create pom'));
-}
-
-// helper to create task
-function addTaskToPom(pomId, token, userSlackId, userName, message, getCommand) {
-
-  // if user exists, assign this task
-  return one.getUserBySlackId({userSlackId}).then(user => {
-
-    // add or update task for this pom
-    return assignTaskToUser(pomId, user.id, userName, message, getCommand);
-  }).catch(res => {
-    // user doesn't exist so add them, first getting team id
-    return one.getTeamByToken({token}).then(team => {
-
-      // create new user
-      return one.createUser({
-        userSlackId,
-        teamId: team.id,
-        userName,
-      }).then(newUser => {
-
-        // assign task to new user
-        return assignTaskToUser(pomId, newUser.id, userName, message, getCommand);
-      }).catch(getErrorHandler('iwill->createUser', 'failed to create new user'));
-    }).catch(getErrorHandler('iwill->getTeamByToken', 'failed to get team with given token'));
-  });
-}
+import {lookupPom, getPom, isPomRunning, createPom} from '../lib/poms';
+import {addTaskToPom} from '../lib/tasks';
 
 export default createCommand({
   name: 'i will',
@@ -57,7 +11,7 @@ export default createCommand({
 }, (message, {user, channel, token, getCommand}) => {
 
   // look up pom
-  return lookupPomId(token, channel.id).then(pomId => {
+  return lookupPom(token, channel.id).then(pomId => {
 
     // if pom exists check if it is already running or update with start time
     if (pomId) {
