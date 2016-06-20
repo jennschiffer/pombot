@@ -1,14 +1,12 @@
 INSERT INTO pom (
   slack_channel_id,
   started_at,
-  is_completed,
-  length
+  is_completed
 )
 VALUES (
   (SELECT id FROM slack_channel WHERE slack_id=${slack_channel_id}),
   CURRENT_TIMESTAMP,
-  false,
-  '30 seconds'
+  false
 )
 ON CONFLICT (slack_channel_id) WHERE (is_completed IS false)
 DO UPDATE

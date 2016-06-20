@@ -1,5 +1,5 @@
 /*
- * A stub for the "i will" command.
+ * The `i will` command, which creates a Task for a User before a Pom.
  */
 import {createCommand} from 'chatter';
 import lookupPomId from '../lib/lookup-pom-id';
@@ -8,18 +8,20 @@ import errorCatch from '../lib/error-catch';
 import getPom from '../lib/get-pom';
 
 // helper to assign task to user
-function assignTaskToUser(pomId, userSlackId, message) {
+function assignTaskToUser(pomId, userSlackId, userName, message, getCommand) {
   return query.assignTask({
     pomId,
     userSlackId,
     message,
-  });
+  }).then(taskRes => {
+    return `${userName}'s task for the next pom is "${message}".` +
+      ` You can start this pom with the command \`${getCommand('start')}\``;
+  }).catch(res => errorCatch(res, 'iwill->assignTaskToUser', 'failed to assign task to user'));
 }
 
 // helper to create pom
 function createPom(slackChannelId) {
   return one.createPomBySlackChannelId({slack_channel_id: slackChannelId})
-    .then(newPomRes => newPomRes)
     .catch(pomRes => errorCatch(pomRes, 'iwill->createPom', 'failed to create pom'));
 }
 
@@ -28,13 +30,9 @@ function addTaskToPom(pomId, token, userSlackId, userName, message, getCommand) 
 
   // if user exists, assign this task
   return one.getUserBySlackId({userSlackId}).then(user => {
-    // add or update task for this pom
-    return assignTaskToUser(pomId, user.id, message).then(taskRes => {
-      // let user know task was assigned
-      return `${userName}'s task for the next pom is "${message}".` +
-        ` You can start this pom with the command \`${getCommand('start')}\``;
-    }).catch(res => errorCatch(res, 'iwill->assignTask', 'failed to assign task to user'));
 
+    // add or update task for this pom
+    return assignTaskToUser(pomId, user.id, userName, message, getCommand);
   }).catch(res => {
     // user doesn't exist so add them, first getting team id
     return one.getTeamByToken({token}).then(team => {
@@ -47,12 +45,7 @@ function addTaskToPom(pomId, token, userSlackId, userName, message, getCommand) 
       }).then(newUser => {
 
         // assign task to new user
-        return assignTaskToUser(pomId, newUser.id, message).then(taskRes => {
-          // let user know task was assigned
-          return `${userName}'s task for the next pom is "${message}".` +
-            ` You can start this pom with the command \`${getCommand('start')}\``;
-
-        }).catch(taskRes => errorCatch(taskRes, 'iwill->assignTask', 'failed to assign task to new user'));
+        return assignTaskToUser(pomId, newUser.id, userName, message, getCommand);
       }).catch(userRes => errorCatch(userRes, 'iwill->createUser', 'failed to create new user'));
     }).catch(teamRes => errorCatch(teamRes, 'iwill->getTeamByToken', 'failed to get team with given token'));
   });

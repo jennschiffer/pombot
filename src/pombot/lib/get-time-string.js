@@ -1,7 +1,7 @@
 /* returns the time in "x minutes and y seconds" format */
 import moment from 'moment';
 
-const getTimeString = function(timeInSeconds) {
+export default function getTimeString(timeInSeconds) {
   const duration = moment.duration(timeInSeconds, 'seconds');
   const minutes = duration.minutes();
   const seconds = duration.seconds();
@@ -18,6 +18,4 @@ const getTimeString = function(timeInSeconds) {
   }
 
   return time.join(' & ');
-};
-
-export default getTimeString;
+}

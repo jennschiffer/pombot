@@ -3,12 +3,12 @@ import {query} from '../../services/db';
 import errorCatch from './error-catch';
 import getTimeString from './get-time-string';
 
-const checkTimer = function(onAlertedCallback, onCompletedCallback) {
-  query.updatePomsSetAlerted()
+export default function checkTimer(onAlertedCallback, onCompletedCallback) {
+  query.updatePomsSetAlerted({})
     .then(alertedRes => {
       alertedRes.map(pom => {
         // alert each pom that has just been set as is_alerted=true
-        onAlertedCallback(getTimeString(pom.seconds_remaining));
+        onAlertedCallback(getTimeString(pom.seconds_remaining), pom.slack_id);
       });
       return alertedRes;
     }).catch(res => errorCatch(res, 'timer->updatePomsSetAlerted', 'failed to update poms to be alerted'));
@@ -17,10 +17,8 @@ const checkTimer = function(onAlertedCallback, onCompletedCallback) {
     .then(completedRes => {
       completedRes.map(pom => {
         // complete each pom that has just been set as is_completed=true
-        onCompletedCallback();
+        onCompletedCallback(pom.slack_id);
       });
       return completedRes;
     }).catch(res => errorCatch(res, 'timer->updatePomsSetCompleted', 'failed to update poms to be completed'));
-};
-
-export default checkTimer;
+}

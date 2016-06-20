@@ -12,7 +12,7 @@ import checkTimer from './lib/check-timer';
 
 export default function createBot(token) {
   // create bot
-  return createSlackBot({
+  const bot = createSlackBot({
     name: 'Pombot',
     icon: 'https://dl.dropboxusercontent.com/u/294332/Bocoup/bots/pombot_icon.png',
     verbose: true,
@@ -30,21 +30,6 @@ export default function createBot(token) {
       const name = channel.is_im ? null : 'pom';
       // Helper method to format the given command name.
       const getCommand = cmd => name ? `${name} ${cmd}` : cmd;
-
-      // Start the timer for this bot
-      setInterval(() => {
-        checkTimer(
-          timeString => {
-            // on alerted callback, tell user time left
-            this.postMessage(channel.id, `:tomato: you have *${timeString}* left in this pom!`);
-          },
-          () => {
-            // on completed callback, tell user pom's completed
-            this.postMessage(channel.id, ':tomato: pom completed!');
-          }
-        );
-      }, 3000);
-
 
       const messageHandler = createArgsAdjuster({
         // Inject getCommand helper into message handler 2nd
@@ -64,10 +49,23 @@ export default function createBot(token) {
         statusCommand,
         iwillCommand,
       ]));
-      // Indicate that the message handler has state so it gets cached.
-      messageHandler.hasState = true;
       return messageHandler;
     },
   });
 
+  // Start the timer for this bot
+  setInterval(() => {
+    checkTimer(
+      (timeString, slackChannelId) => {
+        // on alerted callback, tell user time left
+        bot.postMessage(slackChannelId, `:tomato: you have *${timeString}* left in this pom!`);
+      },
+      slackChannelId => {
+        // on completed callback, tell user pom's completed
+        bot.postMessage(slackChannelId, ':tomato: pom completed!');
+      }
+    );
+  }, 3000);
+
+  return bot;
 }

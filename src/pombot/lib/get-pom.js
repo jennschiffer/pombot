@@ -12,7 +12,7 @@ function getTasks(pomId) {
     .catch(res => errorCatch(res, 'status->getTasksByPomId', 'failed to get tasks from pom'));
 }
 
-const getPom = function(pomId, opts) {
+export default function getPom(pomId, opts) {
   // get pom from given id and any options
   return one.getPomById({pomId}).then(pomRes => {
 
@@ -30,6 +30,4 @@ const getPom = function(pomId, opts) {
     // pom doesn't exist
     return false;
   });
-};
-
-export default getPom;
+}
