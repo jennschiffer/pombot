@@ -4,7 +4,7 @@
 * returns pom record id if it exists, null if not
 */
 import {one, query} from '../../services/db';
-import errorCatch from './error-catch';
+import getErrorHandler from './get-error-handler';
 
 // helper to get pom id
 const getPomId = function({id}) {
@@ -24,7 +24,7 @@ export default function lookupPom(token, slackChannelId) {
         slack_channel_id: slackChannelId,
         slack_team_id: team.id,
         name: 'EXAMPLE CHANNEL NAME', // TODO get channel name? is this even needed?
-      }).then(getPomId).catch(res => errorCatch(res, 'lib/lookupPom->createChannel', 'failed to create channel'));
-    }).catch(res => errorCatch(res, 'lib/lookupPom->getTeamByToken', 'failed to get team with given token'));
+      }).then(getPomId).catch(getErrorHandler('lib/lookupPom->createChannel', 'failed to create channel'));
+    }).catch(getErrorHandler('lib/lookupPom->getTeamByToken', 'failed to get team with given token'));
   });
 }

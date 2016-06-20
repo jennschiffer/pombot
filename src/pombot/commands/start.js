@@ -5,7 +5,7 @@
 import {createCommand} from 'chatter';
 import {one} from '../../services/db';
 import lookupPomId from '../lib/lookup-pom-id';
-import errorCatch from '../lib/error-catch';
+import getErrorHandler from '../lib/get-error-handler';
 import getPom, {isPomRunning} from '../lib/get-pom';
 import getTimeString from '../lib/get-time-string';
 
@@ -17,7 +17,7 @@ function startPom(slackChannelId) {
         timeRemaining: getTimeString(startRes.seconds_remaining),
       });
     })
-    .catch(res => errorCatch(res, 'start->startPom', 'failed to start pom'));
+    .catch(getErrorHandler('start->startPom', 'failed to start pom'));
 }
 
 export default createCommand({

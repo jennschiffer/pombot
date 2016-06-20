@@ -4,7 +4,7 @@
 import {createCommand} from 'chatter';
 import lookupPomId from '../lib/lookup-pom-id';
 import {one, query} from '../../services/db';
-import errorCatch from '../lib/error-catch';
+import getErrorHandler from '../lib/get-error-handler';
 import getPom, {isPomRunning} from '../lib/get-pom';
 
 // helper to assign task to user
@@ -16,13 +16,13 @@ function assignTaskToUser(pomId, userSlackId, userName, message, getCommand) {
   }).then(taskRes => {
     return `${userName}'s task for the next pom is "${message}".` +
       ` You can start this pom with the command \`${getCommand('start')}\``;
-  }).catch(res => errorCatch(res, 'iwill->assignTaskToUser', 'failed to assign task to user'));
+  }).catch(getErrorHandler('iwill->assignTaskToUser', 'failed to assign task to user'));
 }
 
 // helper to create pom
 function createPom(slackChannelId) {
   return one.createPomBySlackChannelId({slack_channel_id: slackChannelId})
-    .catch(pomRes => errorCatch(pomRes, 'iwill->createPom', 'failed to create pom'));
+    .catch(getErrorHandler('iwill->createPom', 'failed to create pom'));
 }
 
 // helper to create task
@@ -46,8 +46,8 @@ function addTaskToPom(pomId, token, userSlackId, userName, message, getCommand) 
 
         // assign task to new user
         return assignTaskToUser(pomId, newUser.id, userName, message, getCommand);
-      }).catch(userRes => errorCatch(userRes, 'iwill->createUser', 'failed to create new user'));
-    }).catch(teamRes => errorCatch(teamRes, 'iwill->getTeamByToken', 'failed to get team with given token'));
+      }).catch(getErrorHandler('iwill->createUser', 'failed to create new user'));
+    }).catch(getErrorHandler('iwill->getTeamByToken', 'failed to get team with given token'));
   });
 }
 

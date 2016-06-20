@@ -1,6 +1,6 @@
 /* updates poms to be alerted or stopped based on a global setinterval timer */
 import {query} from '../../services/db';
-import errorCatch from './error-catch';
+import getErrorHandler from './get-error-handler';
 import getTimeString from './get-time-string';
 
 export default function checkTimer(onAlertedCallback, onCompletedCallback) {
@@ -11,7 +11,7 @@ export default function checkTimer(onAlertedCallback, onCompletedCallback) {
         onAlertedCallback(getTimeString(pom.seconds_remaining), pom.slack_id);
       });
       return alertedRes;
-    }).catch(res => errorCatch(res, 'timer->updatePomsSetAlerted', 'failed to update poms to be alerted'));
+    }).catch(getErrorHandler('timer->updatePomsSetAlerted', 'failed to update poms to be alerted'));
 
   query.updatePomsSetCompleted()
     .then(completedRes => {
@@ -20,5 +20,5 @@ export default function checkTimer(onAlertedCallback, onCompletedCallback) {
         onCompletedCallback(pom.slack_id);
       });
       return completedRes;
-    }).catch(res => errorCatch(res, 'timer->updatePomsSetCompleted', 'failed to update poms to be completed'));
+    }).catch(getErrorHandler('timer->updatePomsSetCompleted', 'failed to update poms to be completed'));
 }

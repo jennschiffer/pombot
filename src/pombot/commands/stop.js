@@ -5,7 +5,7 @@ import {createCommand} from 'chatter';
 import {one} from '../../services/db';
 import lookupPomId from '../lib/lookup-pom-id';
 import getTimeString from '../lib/get-time-string';
-import errorCatch from '../lib/error-catch';
+import getErrorHandler from '../lib/get-error-handler';
 
 function stopPom(pomId) {
   // stops pom and returns time left in seconds
@@ -24,7 +24,7 @@ export default createCommand({
     if (pomId) {
       return stopPom(pomId).then(timeLeft => {
         return `:tomato: the pom has been stopped with *${getTimeString(timeLeft)}* remaining.`;
-      }).catch(res => errorCatch(res, 'stop->stopPom', 'failed to stop the current pom'));
+      }).catch(getErrorHandler('stop->stopPom', 'failed to stop the current pom'));
     }
 
     // there's no existing pom to stop

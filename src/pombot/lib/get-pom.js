@@ -2,14 +2,14 @@
 * gets a pom by id and returns its entire context
 */
 import {one, query} from '../../services/db';
-import errorCatch from './error-catch';
+import getErrorHandler from './get-error-handler';
 import getTimeString from '../lib/get-time-string';
 
 // helper to get tasks
 function getTasks(pomId) {
   return query.getTasksByPomId({pomId})
     .map(task => `> ${task.name} will ${task.description}`)
-    .catch(res => errorCatch(res, 'status->getTasksByPomId', 'failed to get tasks from pom'));
+    .catch(getErrorHandler('status->getTasksByPomId', 'failed to get tasks from pom'));
 }
 
 // helper to check if pom is currently running
