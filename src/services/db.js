@@ -9,7 +9,7 @@ const options = {
   promiseLib: Promise,
 };
 
-if (process.env.DEBUG) {
+if (process.env.DEBUG_SQL) {
   pgMonitor.attach(options);
   pgMonitor.setTheme('matrix');
 }
