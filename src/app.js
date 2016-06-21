@@ -3,6 +3,7 @@ import slack from 'slack';
 import config from '../config';
 import {query} from './services/db';
 import createBot from './pombot';
+import path from 'path';
 
 // =================================
 // Get and set team integration data
@@ -35,28 +36,22 @@ function redirectError(res, message) {
   res.redirect(`/?error=${encodeURIComponent(message)}`);
 }
 
-// Show the slack button for this app and an optional message.
+// public asset files
+app.use('/assets', express.static(path.join(__dirname, '/public/assets')));
+
+// Show the landing page
 app.get('/', (req, res) => {
-  let {message} = req.query;
-  const {error} = req.query;
-  if (error) {
-    res.status(400);
-    message = `Error: ${error}`;
-  }
-  const header = message ? `<p>${message}</p>` : '';
-  res.send(`
-    ${header}
-    <p>
-      <a href="https://slack.com/oauth/authorize?scope=bot&client_id=${config.tokens.client_id}">
-        <img
-        alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png"
-        srcset="
-          https://platform.slack-edge.com/img/add_to_slack.png 1x,
-          https://platform.slack-edge.com/img/add_to_slack@2x.png 2x
-        "/>
-      </a>
-    </p>
-  `);
+  // TODO send this message to landing page
+  // let {message} = req.query;
+  // const {error} = req.query;
+  // if (error) {
+  //   res.status(400);
+  //   message = `Error: ${error}`;
+  // }
+  // const header = message ? `<p>${message}</p>` : '';
+
+  // send html landing page
+  res.sendFile(path.join(__dirname, '/public/index.html'));
 });
 
 // Add a team integration.
