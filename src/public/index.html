@@ -1,12 +1,90 @@
-<p>
-  <a href="https://slack.com/oauth/authorize?scope=bot&client_id=${config.tokens.client_id}">
-    <img
-    alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png"
-    srcset="
-      https://platform.slack-edge.com/img/add_to_slack.png 1x,
-      https://platform.slack-edge.com/img/add_to_slack@2x.png 2x
-    "/>
-  </a>
-</p>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pombot</title>
 
-<a href="/assets/example.html" target="_blank">wow</a>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/site.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,500italic,700,700italic' rel='stylesheet' type='text/css'>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="assets/img/ico/favicon.ico">
+  </head>
+
+  <body>
+    <div>{{ header }}</div>
+    <header>
+      <div class="wrapper">
+
+        <div class="description col-50">
+          <div class="logo">
+            <img class="icon" src="assets/img/pombot-icon.svg">
+            <div class="type">PomBot</div>
+          </div>
+          <h2>A Slack bot for time management</h2>
+          <p>Define, pom and deliver - by yourself or with friends</p>
+          <a class="slack-button" href="https://slack.com/oauth/authorize?scope=bot&client_id={{ client_id }}">
+            <img src="assets/img/slack-icon.svg">Add to <span class="bold">Slack</span>
+          </a>
+        </div>
+
+        <div class="phone">
+          <picture>
+            <source media="(min-width: 20em)"
+              srcset="assets/img/phone.png 1x, assets/img/phone-2x.png 2x">
+            <img src="assets/img/phone.png" alt="">
+          </picture>
+        </div>
+
+      </div>
+    </header>
+
+    <div id="content">
+      <div class="wrapper">
+        <div class="description col-50">
+          <h2>Intuitive Commands</h2>
+          <p>The commands are designed to match the <a href="https://en.wikipedia.org/wiki/Pomodoro_Technique" targe="_blank">Pomodoro Technique</a> interactions. If at any point you forget the commands, type <span class="bold">"pom help."</span></p>
+        </div>
+
+        <div class="commands">
+          <div class="entity">
+            <div class="command"><span class="plus"></span><span>pom I will design the nav</span></div>
+            <p>Records your task for the next pom</p>
+          </div>
+
+          <div class="entity">
+            <div class="command"><span class="plus"></span><span>pom start</span></div>
+            <p>Starts a pom timer for 25 minutes.</p>
+          </div>
+
+          <div class="entity">
+            <div class="command"><span class="plus"></span><span>pom status</span></div>
+            <p>Displays time remaining in the active pom.</p>
+          </div>
+
+          <div class="entity">
+            <div class="command"><span class="plus"></span><span>pom stop</span></div>
+            <p>Stops the active pom.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="wrapper">
+
+        <picture class="bocoup-logo">
+          <source media="(min-width: 20em)"
+            srcset="assets/img/bocoup.png 1x, img/bocoup-2x.png 2x">
+          <img src="assets/img/bocoup.png" alt="">
+        </picture>
+
+        <p>Bocoup maintains PomBot as an open source tool. To share your feedback, open an  issue or a pull request on our <a href="https://github.com/bocoup/pombot" target="_blank">Github repository</a>.</p>
+      </div>
+    </footer>
+
+  </body>
+
+</html>

@@ -4,6 +4,7 @@ import config from '../config';
 import {query} from './services/db';
 import createBot from './pombot';
 import path from 'path';
+import swig from 'swig';
 
 // =================================
 // Get and set team integration data
@@ -36,22 +37,32 @@ function redirectError(res, message) {
   res.redirect(`/?error=${encodeURIComponent(message)}`);
 }
 
-// public asset files
+// set views and assets
+app.engine('html', swig.renderFile);
+app.set('view engine', 'html');
+app.set('views', path.join(__dirname, '/public'));
+
+app.set('view cache', false);
+swig.setDefaults({cache: false});
+
 app.use('/assets', express.static(path.join(__dirname, '/public/assets')));
+app.use('/css', express.static(path.join(__dirname, '/public/css')));
 
 // Show the landing page
 app.get('/', (req, res) => {
-  // TODO send this message to landing page
-  // let {message} = req.query;
-  // const {error} = req.query;
-  // if (error) {
-  //   res.status(400);
-  //   message = `Error: ${error}`;
-  // }
-  // const header = message ? `<p>${message}</p>` : '';
+  let {message} = req.query;
+  const {error} = req.query;
+  if (error) {
+    res.status(400);
+    message = `Error: ${error}`;
+  }
+  const header = message ? `${message}` : '';
 
   // send html landing page
-  res.sendFile(path.join(__dirname, '/public/index.html'));
+  res.render('index', {
+    header,
+    client_id: config.tokens.client_id,
+  });
 });
 
 // Add a team integration.

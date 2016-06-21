@@ -1,0 +1,251 @@
+* { box-sizing: border-box; moz-box-sizing: border-box; }
+
+body {
+  font-family: Roboto, sans-serif;
+  font-weight: 100;
+  color: #4A4A4A;
+  margin: 0;
+  border: solid transparent;
+  border-width: 0 0 10px;
+  -webkit-border-image: url('../assets/img/rainbow-header.svg') 4 1 4 1 stretch;
+  -moz-border-image: url('../assets/img/rainbow-header.svg') 4 1 4 1 stretch;
+  -o-border-image: url('../assets/img/rainbow-header.svg') 4 1 4 1 stretch;
+  border-image: url('../assets/img/rainbow-header.svg') 4 1 4 1 stretch;
+}
+
+img {
+  max-width: 100%;
+}
+
+h1, h2 {
+  font-weight: 300;
+  margin-top: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+p a {
+  color: #4A90E2;
+}
+
+p a:hover {
+  text-decoration: underline;
+}
+
+.bold {
+  font-weight: 600;
+}
+
+.wrapper {
+  padding: 2em 1em;
+  max-width: 1060px;
+  margin: auto;
+}
+
+@media (min-width: 30em) {
+  h2 {
+    font-size: 1.9em;
+  }
+
+  p {
+    font-size: 1.1em;
+  }
+
+  .wrapper {
+    padding: 4em;
+  }
+}
+
+/*--------------*/
+/*--- Header ---*/
+/*--------------*/
+
+header {
+  background: #F94241;
+  color: white;
+}
+
+.logo {
+  margin-bottom: 1em;
+}
+
+.logo .type {
+  font-size: 2em;
+  display: inline-block;
+  vertical-align: top;
+  line-height: 57px;
+  margin-left: .2em;
+}
+
+header h2 {
+  margin-bottom: .5em;
+}
+
+.slack-button {
+  font-size: 1.1em;
+  background: white;
+  border-radius: 5px;
+  padding: .6em .7em;
+  font-weight: 400;
+  display: inline-block;
+  margin-top: .5em;
+}
+
+a.slack-button  {
+  color: #4A4A4A;
+}
+
+a.slack-button:hover {
+  background: #eae9e9;
+}
+
+.slack-button img {
+  width: 25px;
+  vertical-align: top;
+  margin-right: .4em;
+}
+
+.phone {
+  display: none;
+}
+
+@media (min-width: 44em) {
+  header {
+    margin-bottom: -19em;
+  }
+
+  header .description {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .logo {
+    margin-bottom: 2em;
+  }
+
+  .logo img {
+    width: 80px;
+  }
+
+  .logo .type {
+    font-size: 2.5em;
+    line-height: 80px;
+  }
+
+  .slack-button {
+    margin-top: 1.5em;
+  }
+
+  .phone {
+    display: inline-block;
+    width: 50%;
+    margin-right: -4px;
+    margin-bottom: 2em;
+    text-align: center;
+  }
+
+  .col-50 {
+    width: 50%;
+    padding-right: 1em;
+  }
+
+}
+
+/*---------------*/
+/*--- Content ---*/
+/*---------------*/
+
+#content {
+  background: #F8F1E9
+}
+
+.command {
+  background: white;
+  border: 3px solid #D4D4DB;
+  border-radius: 3px;
+}
+
+.entity {
+  margin-bottom: 2em;
+}
+
+.entity p {
+  margin-top: .5em;
+}
+
+.command span {
+  vertical-align: top;
+  line-height: 2.2em;
+  font-size: .9em;
+}
+
+.command span.plus {
+  width: 2.2em;
+  height: 2.2em;
+  position: relative;
+  background: #D4D4DB;
+  display: inline-block;
+  margin-right: .5em;
+}
+
+.command span.plus:after { 
+  content:'+';
+  position: absolute;
+  border: 1px solid #9C9C9C;
+  border-radius: 20px;
+  width: 1.7em;
+  height: 1.7em;
+  line-height: 1.6em;
+  text-align: center;
+  left: .2em;
+  top: .2em;
+}
+
+
+
+@media (min-width: 32em) {
+  .entity {
+    width: 50%;
+    padding-right:.5em;
+    display: inline-block;
+    margin-right: -3px;
+    vertical-align: top;
+  }
+}
+
+@media (min-width: 42em) { 
+  #content .description {
+    margin-bottom: 5em;
+  }
+}
+
+
+
+@media (min-width: 61em) { 
+  .entity { 
+    width: 25%;
+  }
+
+  .entity p {
+    margin-top: 1.5em;
+  }
+}
+
+/*--------------*/
+/*--- Footer ---*/
+/*--------------*/
+
+@media (min-width: 52em) {
+
+  footer .wrapper {
+    padding: 3em 4em;
+  }
+
+  .bocoup-logo {
+    float: left;
+    margin: .5em 2em 0 0;
+  }
+
+ }

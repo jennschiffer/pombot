@@ -31,7 +31,8 @@
     "pg": "^5.0.0",
     "pg-monitor": "^0.5.8",
     "pg-promise": "^4.5.0",
-    "slack": "^7.2.0"
+    "slack": "^7.2.0",
+    "swig": "^1.4.2"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
