@@ -17,19 +17,19 @@ export default createCommand({
       return getPom(pomId).then(pomRes => {
         if (isPomRunning(pomRes)) {
           // just let user know pom is already running
-          return `there is already a pom running with *${pomRes.timeRemaining}* left.`;
+          return `There is already a pom running with *${pomRes.timeRemaining}* remaining.`;
         }
 
         // otherwise start the pom
         return startPom(channel.id).then(startRes => {
-          return `:tomato: pom started – you have *${startRes.timeRemaining}* left!`;
+          return `:tomato: Pom started – you have *${startRes.timeRemaining}* remaining!`;
         });
       });
     }
 
     // if pom doesn't exist, create with start time
     return startPom(channel.id).then(newPomRes => {
-      return `:tomato: pom started – you have *${newPomRes.timeRemaining}* left!`;
+      return `:tomato: Pom started – you have *${newPomRes.timeRemaining}* remaining!`;
     });
   });
 

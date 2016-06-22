@@ -15,18 +15,19 @@ export default createCommand({
 
       // get the info from the pom and print out
       return getPom(pomId).then(pomRes => {
-        const taskHeader = (pomRes.tasks.length > 0) ? 'here is the task list:' : 'there are no tasks declared.';
 
         if (isPomRunning(pomRes)) {
-          return [`a pom is currently running with *${pomRes.timeRemaining}* left and ${taskHeader}`, pomRes.tasks];
+          const taskHeader = (pomRes.tasks.length > 0) ? 'Task list:' : 'There are no tasks declared.';
+          return [`*${pomRes.timeRemaining}* remaining. ${taskHeader}`, pomRes.tasks];
         }
 
-        return [`there is no pom currently running - start one with the command ` +
-          `\`${getCommand('start')}\`. as for the next pom, ${taskHeader}`, pomRes.tasks];
+        const taskHeader = (pomRes.tasks.length > 0) ? 'Task list for next pom:' : 'There are no tasks declared for the next pom.';
+        return [`No pom running - start a new one with ` +
+          `\`${getCommand('start')}\`. ${taskHeader}`, pomRes.tasks];
       });
     }
 
     // otherwise let user know there's no running pom
-    return `there is no pom currently running – start one with the command \`${getCommand('start')}\``;
+    return `No pom running – start a new one with \`${getCommand('start')}\``;
   });
 });

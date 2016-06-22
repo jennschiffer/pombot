@@ -19,7 +19,7 @@ export default createCommand({
 
         // if pom exists and it's running, let user know they can't update tasks
         if (isPomRunning(pomRes)) {
-          return `it's too late to declare a task, a pom is already running with *${pomRes.timeRemaining}* left.`;
+          return `It is too late to declare a task, a pom is already running with *${pomRes.timeRemaining}* remaining.`;
         }
 
         // add task to this unstarted pom ID
