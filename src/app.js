@@ -91,8 +91,11 @@ app.get('/authorize', (req, res) => {
 app.get('/health-db', (req, res) => {
   // simple query to assure db connectivity
   query.teams()
-    .then(() => res.status(200));
-    .catch(() => res.status(500));
+    .then(() => res.status(200))
+    .catch(error => {
+      console.log('health check error:', error);
+      res.status(500);
+    });
 });
 
 // Start the web server.
