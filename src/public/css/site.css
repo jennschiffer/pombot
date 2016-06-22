@@ -5,12 +5,6 @@ body {
   font-weight: 100;
   color: #4A4A4A;
   margin: 0;
-  border: solid transparent;
-  border-width: 0 0 10px;
-  -webkit-border-image: url('../assets/img/rainbow-header.svg') 4 1 4 1 stretch;
-  -moz-border-image: url('../assets/img/rainbow-header.svg') 4 1 4 1 stretch;
-  -o-border-image: url('../assets/img/rainbow-header.svg') 4 1 4 1 stretch;
-  border-image: url('../assets/img/rainbow-header.svg') 4 1 4 1 stretch;
 }
 
 img {
@@ -56,6 +50,29 @@ p a:hover {
   .wrapper {
     padding: 4em;
   }
+}
+
+/*--------------*/
+/*-- Response --*/
+/*--------------*/
+
+.alert.success,
+.alert.error {
+  text-align: center;
+  padding: 1em;
+  margin-bottom: .1em;
+  font-weight: bold;
+  letter-spacing: .1em;
+}
+
+.alert.success {
+  background-color: green;
+  color: white;
+}
+
+.alert.error {
+  background-color: red;
+  color: black;
 }
 
 /*--------------*/
@@ -190,7 +207,7 @@ a.slack-button:hover {
   margin-right: .5em;
 }
 
-.command span.plus:after { 
+.command span.plus:after {
   content:'+';
   position: absolute;
   border: 1px solid #9C9C9C;
@@ -215,7 +232,7 @@ a.slack-button:hover {
   }
 }
 
-@media (min-width: 42em) { 
+@media (min-width: 42em) {
   #content .description {
     margin-bottom: 5em;
   }
@@ -223,8 +240,8 @@ a.slack-button:hover {
 
 
 
-@media (min-width: 61em) { 
-  .entity { 
+@media (min-width: 61em) {
+  .entity {
     width: 25%;
   }
 
@@ -236,6 +253,15 @@ a.slack-button:hover {
 /*--------------*/
 /*--- Footer ---*/
 /*--------------*/
+
+footer {
+  border: solid transparent;
+  border-width: 0 0 10px 0;
+  -webkit-border-image: url(https://static.bocoup.com/assets/img/rainbow-header.svg.gz) 4 1 4 1 stretch;
+  -moz-border-image: url(https://static.bocoup.com/assets/img/rainbow-header.svg.gz) 4 1 4 1 stretch;
+  -o-border-image: url(https://static.bocoup.com/assets/img/rainbow-header.svg.gz) 4 1 4 1 stretch;
+  border-image: url(https://static.bocoup.com/assets/img/rainbow-header.svg.gz) 4 1 4 1 stretch;
+}
 
 @media (min-width: 52em) {
 

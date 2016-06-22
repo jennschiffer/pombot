@@ -166,5 +166,9 @@ secret_user: "{{ lookup('env', 'USER') }}"
 secret_server: nest.bocoup.com
 secret_path: /mnt/secrets
 secret_vars:
-  - src: pombot-slack
+  - src: pombot-slack-marketplace
     dest: POMBOT_KEYS
+  - src: rds
+    dest: RDS
+  - src: pombot-db-production
+    dest: POMBOT_DB

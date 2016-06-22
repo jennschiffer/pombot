@@ -57,10 +57,15 @@ app.get('/', (req, res) => {
     message = `Error: ${error}`;
   }
   const header = message ? `${message}` : '';
+  let headerClass = '';
+  if (message) {
+    headerClass = (error) ? 'error' : 'success';
+  }
 
   // send html landing page
   res.render('index', {
     header,
+    headerClass,
     client_id: config.tokens.client_id,
   });
 });
