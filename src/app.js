@@ -87,6 +87,14 @@ app.get('/authorize', (req, res) => {
   });
 });
 
+// Endpoint to check the health of the database
+app.get('/health-db', (req, res) => {
+  // simple query to assure db connectivity
+  query.teams()
+    .then(() => res.status(200));
+    .catch(() => res.status(500));
+});
+
 // Start the web server.
 app.listen(config.app.port, config.app.host);
 console.log(`Server running on ${config.app.host}:${config.app.port}.`);
