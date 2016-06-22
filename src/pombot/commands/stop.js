@@ -17,11 +17,11 @@ export default createCommand({
     // if pom exists stop it and let user know how much time remained
     if (pomId) {
       return stopPom(pomId).then(timeLeft => {
-        return `:tomato: the pom has been stopped with *${getTimeString(timeLeft)}* remaining.`;
+        return `:tomato: The pom has been stopped with *${getTimeString(timeLeft)}* remaining.`;
       }).catch(getErrorHandler('stop->stopPom', 'failed to stop the current pom'));
     }
 
     // there's no existing pom to stop
-    return `there is no pom currently running – start one with the command \`${getCommand('start')}\``;
+    return `There is no pom currently running – start one with the command \`${getCommand('start')}\``;
   });
 });
