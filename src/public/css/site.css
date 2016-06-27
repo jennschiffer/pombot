@@ -71,7 +71,7 @@ p a:hover {
 }
 
 .alert.error {
-  background-color: red;
+  background-color: orange;
   color: black;
 }
 
