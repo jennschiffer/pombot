@@ -3,6 +3,8 @@ import slack from 'slack';
 import config from '../config';
 import {query} from './services/db';
 import createBot from './pombot';
+import path from 'path';
+import swig from 'swig';
 
 // =================================
 // Get and set team integration data
@@ -35,7 +37,18 @@ function redirectError(res, message) {
   res.redirect(`/?error=${encodeURIComponent(message)}`);
 }
 
-// Show the slack button for this app and an optional message.
+// set views and assets
+app.engine('html', swig.renderFile);
+app.set('view engine', 'html');
+app.set('views', path.join(__dirname, '/public'));
+
+app.set('view cache', false);
+swig.setDefaults({cache: false});
+
+app.use('/assets', express.static(path.join(__dirname, '/public/assets')));
+app.use('/css', express.static(path.join(__dirname, '/public/css')));
+
+// Show the landing page
 app.get('/', (req, res) => {
   let {message} = req.query;
   const {error} = req.query;
@@ -43,20 +56,18 @@ app.get('/', (req, res) => {
     res.status(400);
     message = `Error: ${error}`;
   }
-  const header = message ? `<p>${message}</p>` : '';
-  res.send(`
-    ${header}
-    <p>
-      <a href="https://slack.com/oauth/authorize?scope=bot&client_id=${config.tokens.client_id}">
-        <img
-        alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png"
-        srcset="
-          https://platform.slack-edge.com/img/add_to_slack.png 1x,
-          https://platform.slack-edge.com/img/add_to_slack@2x.png 2x
-        "/>
-      </a>
-    </p>
-  `);
+  const header = message ? `${message}` : '';
+  let headerClass = '';
+  if (message) {
+    headerClass = (error) ? 'error' : 'success';
+  }
+
+  // send html landing page
+  res.render('index', {
+    header,
+    headerClass,
+    client_id: config.tokens.client_id,
+  });
 });
 
 // Add a team integration.

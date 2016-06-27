@@ -61,7 +61,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('start', function() {
-    global._BOT = spawn('node', ['--require', 'babel-register', './src/app'], {stdio: 'inherit'});
+    global._BOT = spawn('node', ['--require', 'babel-register', './src'], {stdio: 'inherit'});
   });
 
   grunt.registerTask('kill', function() {

@@ -14,7 +14,6 @@ export default function createBot(token) {
   // create bot
   const bot = createSlackBot({
     name: 'Pombot',
-    icon: 'https://dl.dropboxusercontent.com/u/294332/Bocoup/bots/pombot_icon.png',
     verbose: true,
     getSlack() {
       return {
