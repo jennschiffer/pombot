@@ -57,10 +57,12 @@ export default function createBot(token) {
     checkTimer(
       (timeString, slackChannelId) => {
         // on alerted callback, tell user time left
+        console.log('alert', slackChannelId, bot);
         bot.postMessage(slackChannelId, `:tomato: *${timeString}* remaining in this pom!`);
       },
       slackChannelId => {
         // on completed callback, tell user pom's completed
+        console.log('complete', slackChannelId, bot);
         bot.postMessage(slackChannelId, ':tomato: Pom completed!');
       }
     );
