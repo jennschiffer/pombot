@@ -12,7 +12,8 @@ export default function checkTimer(token, onAlertedCallback, onCompletedCallback
           onCompletedCallback(pom.slack_id);
         });
         return completedRes;
-      }).catch(getErrorHandler('timer->updatePomsSetCompleted', 'failed to update poms to be completed'));
+      })
+      .catch(getErrorHandler('lib/check-timer->updatePomsSetCompleted', 'failed to update poms to be completed'));
 
   query.updateTeamPomsSetAlerted({token})
     .then(alertedRes => {
@@ -21,5 +22,6 @@ export default function checkTimer(token, onAlertedCallback, onCompletedCallback
         onAlertedCallback(getTimeString(pom.seconds_remaining), pom.slack_id);
       });
       return alertedRes;
-    }).catch(getErrorHandler('timer->updatePomsSetAlerted', 'failed to update poms to be alerted'));
+    })
+    .catch(getErrorHandler('lib/check-timer->updatePomsSetAlerted', 'failed to update poms to be alerted'));
 }
