@@ -9,6 +9,7 @@ export default function checkTimer(onAlertedCallback, onCompletedCallback) {
       .then(completedRes => {
         completedRes.map(pom => {
           // complete each pom that has just been set as is_completed=true
+          console.log('completed ---', pom);
           onCompletedCallback(pom.slack_id);
         });
         return completedRes;
@@ -18,6 +19,7 @@ export default function checkTimer(onAlertedCallback, onCompletedCallback) {
     .then(alertedRes => {
       alertedRes.map(pom => {
         // alert each pom that has just been set as is_alerted=true
+        console.log('alert ---', pom);
         onAlertedCallback(getTimeString(pom.seconds_remaining), pom.slack_id);
       });
       return alertedRes;
