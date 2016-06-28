@@ -11,6 +11,7 @@ import iwillCommand from './commands/iwill';
 import checkTimer from './lib/check-timer';
 
 export default function createBot(token) {
+
   // create bot
   const bot = createSlackBot({
     name: 'Pombot',
@@ -55,14 +56,13 @@ export default function createBot(token) {
   // Start the timer for this bot
   setInterval(() => {
     checkTimer(
+      token,
       (timeString, slackChannelId) => {
         // on alerted callback, tell user time left
-        console.log('alert', slackChannelId, bot);
         bot.postMessage(slackChannelId, `:tomato: *${timeString}* remaining in this pom!`);
       },
       slackChannelId => {
         // on completed callback, tell user pom's completed
-        console.log('complete', slackChannelId, bot);
         bot.postMessage(slackChannelId, ':tomato: Pom completed!');
       }
     );
