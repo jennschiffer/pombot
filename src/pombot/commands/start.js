@@ -12,9 +12,7 @@ export default createCommand({
 
   // look up pom
   return lookupPom(token, channel.id).then(pomId => {
-    console.log('lookuppom called', token, channel.id);
     if (pomId) {
-      console.log('pomid exists', pomId);
       // get the info from the pom and print out
       return getPom(pomId).then(pomRes => {
         if (isPomRunning(pomRes)) {
@@ -29,10 +27,8 @@ export default createCommand({
       });
     }
 
-    console.log('pomid does not exist', channel.id);
     // if pom doesn't exist, create with start time
     return startPom(channel.id).then(newPomRes => {
-      console.log('pom started', newPomRes);
       return `:tomato: Pom started – you have *${newPomRes.timeRemaining}* remaining!`;
     });
   });
