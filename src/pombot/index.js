@@ -42,6 +42,7 @@ export default function createBot(token) {
       }, createCommand({
         isParent: true,
         name,
+        icon: 'https://static.bocoup.com/pombot/tomato-512x512.png',
         description: `:tomato: Hi, I'm pombot!`,
       }, [
         startCommand,
