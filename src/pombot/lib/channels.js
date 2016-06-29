@@ -1,23 +1,21 @@
 /*
 * gets a pom by id and returns its entire context
 */
-import {one, query} from '../../services/db';
+import {one, oneOrNone} from '../../services/db';
 import getErrorHandler from './get-error-handler';
-import {getPomId} from './poms';
 
-// helper to get channel id
+// helper to get channel
 export const getChannelBySlackId = function(slackChannelId) {
-  return one.getChannel({slack_channel_id: slackChannelId})
-    .get('id')
-    .catch(getErrorHandler('lib/getchannelbyslackid->getchannel', 'failed to get channel with given channel slack id'));
+  return oneOrNone.getChannel({slack_channel_id: slackChannelId})
+    .catch(getErrorHandler('lib/channels->getChannelBySlackId', 'failed to get channel'));
 };
 
-// helper to create channel
-export const createChannel = function(slackChannelId, teamId) {
-  return query.createChannel({
+// helper to create channel and then call pom Id return
+export const createNewChannel = function(slackChannelId, teamId) {
+  console.log('new channel');
+  return one.createChannel({
     slack_channel_id: slackChannelId,
     slack_team_id: teamId,
   })
-    .then(getPomId)
-    .catch(getErrorHandler('lib/lookupPom->createChannel', 'failed to create channel'));
+  .catch(getErrorHandler('lib/channels->createChannel', 'failed to create channel'));
 };

@@ -12,7 +12,6 @@ export default createCommand({
   // look up pom with token and channel id
   return lookupPom(token, channel.id).then(pomId => {
     if (pomId) {
-
       // get the info from the pom and print out
       return getPom(pomId).then(pomRes => {
 
