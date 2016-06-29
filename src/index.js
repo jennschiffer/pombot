@@ -70,6 +70,11 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/privacypolicy', (req, res) => {
+  // send html privacy policy page
+  res.render('privacy');
+});
+
 // Add a team integration.
 app.get('/authorize', (req, res) => {
   const {error, code} = req.query;
