@@ -1,15 +1,16 @@
 /*
 * gets a pom by id and returns its entire context
 */
-import {one, query} from '../../services/db';
+import {one} from '../../services/db';
 import getErrorHandler from './get-error-handler';
 import getTimeString from '../lib/get-time-string';
 import {getTasks} from '../lib/tasks';
+import {getChannelBySlackId, createNewChannel} from '../lib/channels';
 
 // helper to create pom
 export const createPom = function(slackChannelId) {
   return one.createPomBySlackChannelId({slack_channel_id: slackChannelId})
-    .catch(getErrorHandler('iwill->createPom', 'failed to create pom'));
+    .catch(getErrorHandler('lib/poms->createPom', 'failed to create pom'));
 };
 
 // helper to start pom
@@ -21,7 +22,7 @@ export const startPom = function(slackChannelId) {
         timeRemaining: getTimeString(startRes.seconds_remaining),
       });
     })
-    .catch(getErrorHandler('start->startPom', 'failed to start pom'));
+    .catch(getErrorHandler('lib/poms->startPom', 'failed to start pom'));
 };
 
 // helper to check if pom is currently running
@@ -53,7 +54,7 @@ export const getPom = function(pomId, opts) {
   });
 };
 
-// helper to get pom id
+// helper to get pom id by slack channel id
 export const getPomId = function({id}) {
   // check for pom in db, return false if it doesn't exist
   return one.getCurrentPom({slack_channel_id: id}).get('id').catch(res => { return false;});
@@ -61,17 +62,20 @@ export const getPomId = function({id}) {
 
 // takes the slack channel id and returns a pom's id
 export const lookupPom = function(token, slackChannelId) {
-  // check for channel in db
-  return one.getChannel({slack_channel_id: slackChannelId}).then(getPomId).catch(channelRes => {
+  return one.getTeamByToken({token}).then(team => {
 
-    // need to create channel, first get team id
-    return one.getTeamByToken({token}).then(team => {
-      // add team's channel as it doesn't exist
-      query.createChannel({
-        slack_channel_id: slackChannelId,
-        slack_team_id: team.id,
-        name: 'EXAMPLE CHANNEL NAME', // TODO get channel name? is this even needed?
-      }).then(getPomId).catch(getErrorHandler('lib/lookupPom->createChannel', 'failed to create channel'));
-    }).catch(getErrorHandler('lib/lookupPom->getTeamByToken', 'failed to get team with given token'));
-  });
+    // check for channel in db
+    return getChannelBySlackId(slackChannelId).then(channel => {
+      if (channel) {
+        // return pom id
+        return getPomId({id: channel.id});
+      }
+
+      // create channel and return pom id
+      return createNewChannel(slackChannelId, team.id).then(newChannel => {
+        return getPomId({id: newChannel.id});
+      });
+    });
+
+  }).catch(getErrorHandler('lib/poms->getTeamByToken', 'failed to get team with given token'));
 };
