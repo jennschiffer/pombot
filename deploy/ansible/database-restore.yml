@@ -16,7 +16,6 @@
         DB_HOST: localhost
         DB_PORT: 5432
         DB_USER: bocoup
-        DB_USER: bocoup
         DB_NAME: bocoup
         DB_ENCRYPTION_KEY: process.env.DB_ENCRYPTION_KEY
     - name: start api
