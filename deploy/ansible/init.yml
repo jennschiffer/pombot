@@ -4,6 +4,7 @@
 
 - include: provision.yml
 - include: configure.yml
+- include: database-restore.yml
 
 # Because this playbook targets the "vagrant" inventory host, it will only be
 # run for the Vagrant box, and skipped otherwise.

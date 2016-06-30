@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+const key = process.env.DB_ENCRYPTION_KEY;
+
+if (!key) {
+  console.error('No encryption key specified.');
+  process.exit(1);
+}
+
+const aesgcm = require('aes-gcm-stream');
+const encrypt = aesgcm.encrypt({
+  key: new Buffer(key, aesgcm.getKeyEncoding())
+});
+
+process.stdin.pipe(encrypt).pipe(process.stdout).on('end', function () {
+  process.exit();
+})

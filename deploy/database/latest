@@ -1,0 +1,27 @@
+#!/bin/bash
+# Grab the latest database backup from s3, decrypt, send to stdout.
+
+# The path to awscli
+AWSCLI=/usr/local/bin/aws
+
+# The bucket to search for files within.
+BUCKET=s3://bocoup-backup/pombot
+
+# A prefix to use so the entire bucket doesn't have to be iterated to
+# find the most recent file.
+PREFIX=`date +%Y%m`
+# ^
+# Note: Because we are searching for files beginning with YYYYMM, this
+# has the slim possibility of failing to find a file if a restore is
+# run on the first of the month before any backups have been cut.
+
+# Find the most recent backup based on the provided prefix.
+LATEST=$($AWSCLI s3 ls $BUCKET/$PREFIX | sort -n | tail -n1 | awk '{print $4}')
+
+# Send file to stdout or exit with an error if none was found.
+if [ -z "$LATEST" ]; then
+  echo "No backup beginning with $PREFIX found."
+  exit 1
+else
+  $AWSCLI --quiet s3 cp $BUCKET/$LATEST - | `dirname $0`/decrypt
+fi

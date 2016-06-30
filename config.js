@@ -17,5 +17,6 @@ module.exports = {
     database: process.env.DB_NAME,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
+    key: process.env.DB_ENCRYPTION_KEY,
   },
 };

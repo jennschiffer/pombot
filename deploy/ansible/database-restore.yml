@@ -1,0 +1,23 @@
+- hosts:
+    - vagrant
+    - pombot.bocoup.com
+  become: yes
+  become_method: sudo
+  roles:
+    - secrets
+  tasks:
+    - name: stop api
+      service: name=api state=stopped
+    - name: load database from s3
+      shell: ./database/latest | ./database/load
+      args:
+        chdir: "{{base_path}}/api/deploy/"
+      environment:
+        DB_HOST: localhost
+        DB_PORT: 5432
+        DB_USER: bocoup
+        DB_USER: bocoup
+        DB_NAME: bocoup
+        DB_ENCRYPTION_KEY: process.env.DB_ENCRYPTION_KEY
+    - name: start api
+      service: name=api state=started

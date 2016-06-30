@@ -1,0 +1,13 @@
+#!/bin/bash
+# Dump the current database, encrypt, store on s3.
+
+# The path to awscli
+AWSCLI=/usr/local/bin/aws
+
+# The destination bucket/prefix.
+DEST=s3://bocoup-backup/pombot
+
+# The destination filename, based on the current date/time.
+FILENAME=`date +%Y%m%d%H%M%S`
+
+`dirname $0`/dump | `dirname $0`/encrypt | $AWSCLI s3 cp - $DEST/$FILENAME
