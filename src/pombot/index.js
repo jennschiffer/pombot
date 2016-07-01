@@ -26,8 +26,10 @@ export default function createBot(token) {
       };
     },
     createMessageHandler(id, {channel}) {
+      // Bot userid and name.
+      const {botName, aliases} = this.getBotNameAndAliases();
       // Give command a name in public channels.
-      const name = channel.is_im ? null : 'pom';
+      const name = channel.is_im ? null : botName;
       // Helper method to format the given command name.
       const getCommand = cmd => name ? `${name} ${cmd}` : cmd;
 
@@ -42,6 +44,7 @@ export default function createBot(token) {
       }, createCommand({
         isParent: true,
         name,
+        aliases,
         icon: 'https://static.bocoup.com/pombot/tomato-512x512.png',
         description: `:tomato: Hi, I'm pombot!`,
       }, [
