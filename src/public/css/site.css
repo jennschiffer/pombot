@@ -263,6 +263,13 @@ footer {
   border-image: url(https://static.bocoup.com/assets/img/rainbow-header.svg.gz) 4 1 4 1 stretch;
 }
 
+.chatter {
+  padding-left: 20px;
+  background: url(https://static.bocoup.com/chatter/logo.svg) no-repeat left top;
+  background-size: 18px;
+
+}
+
 @media (min-width: 52em) {
 
   footer .wrapper {
