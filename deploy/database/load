@@ -1,0 +1,26 @@
+#!/bin/bash
+# Load database from stdin (blows away existing database, keeps backup).
+
+if [[ $DB_HOST != "localhost" ]]; then
+  echo "Refusing to restore to anything but local database."
+  exit 1
+fi
+
+if [ -t 0 ]; then
+  echo "Expected database from stdin."
+  exit 1
+fi
+
+exec 3>&2
+exec 2> /dev/null
+EXISTS=$(psql -h $DB_HOST -p $DB_PORT -U $DB_USER -lqtw $DB_NAME | cut -d \| -f 1 | grep -w $DB_NAME | wc -l 2> /dev/null)
+exec 2>&3
+
+if [[ $EXISTS -eq "1" ]]; then
+  BACKUP=`date +%Y%m%d%H%M%S`
+  echo "Dropping database $DB_NAME."
+  `dirname $0`/dump > /tmp/$BACKUP
+  dropdb -U $DB_USER -h $DB_HOST -p $DB_PORT $DB_NAME
+fi
+
+cat - | pg_restore -C -d postgres -h $DB_HOST -p $DB_PORT -U $DB_USER

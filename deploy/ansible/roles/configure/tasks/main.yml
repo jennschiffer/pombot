@@ -63,5 +63,14 @@
 - include: secrets.yml
   when: env != "development"
 
+- name: database backups are scheduled every hour
+  cron:
+    name: backup
+    cron_file: backup
+    user: root
+    minute: 0
+    job: "{{db_env}} {{api_base_path}}/deploy/database/backup >> /var/log/backup 2>&1"
+  when: env == "production"
+
 - include: swap.yml
   when: swap_file_path is defined and swap_file_size is defined
