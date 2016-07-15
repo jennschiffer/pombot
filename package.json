@@ -5,6 +5,8 @@
   "scripts": {
     "get-secrets": "ssh nest.bocoup.com cat /mnt/secrets/{pombot/slack-dev,rds-bocoup-db/{connection,db/pombot-dev}} > .env",
     "db": "export $(<.env) && psql $PGNAME",
+    "db:create": "export $(<.env) && createdb $PGNAME",
+    "db:drop": "export $(<.env) && dropdb -i $PGNAME",
     "start": "babel-node ./src",
     "start-dev": "NOCACHE_SQL=1 grunt",
     "test": "grunt test",
