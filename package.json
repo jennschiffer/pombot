@@ -11,7 +11,8 @@
     "migrate": "careen",
     "migrate:up": "careen -A -e",
     "migrate:down": "careen -R -e",
-    "migrate:create": "careen -C"
+    "migrate:create": "careen -C",
+    "shrinkwrap": "npm shrinkwrap && babel-node tools/fix-shrinkwrap"
   },
   "dependencies": {
     "@slack/client": "^3.4.0",
@@ -39,5 +40,8 @@
     "grunt-cli": "^0.1.13",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-eslint": "^17.3.1"
+  },
+  "optionalDependencies": {
+    "fsevents": "^1.0.7"
   }
 }
