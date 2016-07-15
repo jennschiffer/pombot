@@ -3,8 +3,8 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "get-secrets": "ssh nest.bocoup.com \"cat /mnt/secrets/{rds,pombot-slack-marketplace,pombot-db-dev}\" > ./.env",
-    "db": "source .env && PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -p $DB_PORT -U $DB_USER $DB_NAME",
+    "get-secrets": "ssh nest.bocoup.com cat /mnt/secrets/{pombot/slack-dev,rds-bocoup-db/{connection,db/pombot-dev}} > .env",
+    "db": "export $(<.env) && psql $PGNAME",
     "start": "babel-node ./src",
     "start-dev": "NOCACHE_SQL=1 grunt",
     "test": "grunt test",
