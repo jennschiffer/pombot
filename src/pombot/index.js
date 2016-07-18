@@ -6,6 +6,7 @@ import startCommand from './commands/start';
 import stopCommand from './commands/stop';
 import statusCommand from './commands/status';
 import iwillCommand from './commands/iwill';
+import versionCommand from './commands/version';
 
 // timer
 import checkTimer from './lib/check-timer';
@@ -52,6 +53,7 @@ export default function createBot(token) {
         stopCommand,
         statusCommand,
         iwillCommand,
+        versionCommand,
       ]));
       return messageHandler;
     },

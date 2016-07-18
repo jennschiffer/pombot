@@ -7,8 +7,14 @@
 - name: compare package.json of current deploy with previous deploy
   command: diff {{site_path}}/package.json {{clone_path}}/package.json
   register: package_diff
+  changed_when: false
   ignore_errors: true
   no_log: true
 
 - name: install npm modules
   npm: path="{{clone_path}}"
+  when: package_diff.rc != 0
+
+- name: copy existing npm modules
+  command: cp -R {{site_path}}/node_modules {{clone_path}}
+  when: package_diff.rc == 0
