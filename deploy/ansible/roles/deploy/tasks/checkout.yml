@@ -7,7 +7,7 @@
 
 - name: clone git repo into temp directory
   git:
-    repo: "{{synced_folder if local else git_repo}}"
+    repo: "{{base_path ~ '/vagrant' if local else git_repo}}"
     dest: "{{clone_path}}"
     version: "{{commit}}"
 

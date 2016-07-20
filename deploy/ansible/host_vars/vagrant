@@ -1,0 +1,16 @@
+# All variables defined here override those in group_vars/all, for the
+# purposes of developing and testing deployment in Vagrant.
+
+# Vagrant box hostname and FQDN. The site_fqdn setting should match the vagrant
+# inventory ansible_ssh_host and Vagrantfile config.hostsupdater.aliases
+# settings.
+hostname: ansible-vagrant
+site_fqdn: "{{project_name}}.loc"
+
+# Should the nginx server use HTTPS instead of HTTP?
+ssl: true
+
+# If ssl is enabled, these cert/key files will be used by nginx. Self-signed
+# cert/key files will be auto-generated if they don't already exist.
+ssl_cert_path: /etc/ssl/server.cert
+ssl_key_path: /etc/ssl/server.key

@@ -1,0 +1,6 @@
+# This inventory allows you to run playbooks granularly via ansible-playbook
+# instead of having to rely on the (rather limited) vagrant provision command.
+# The ansible_ssh_host value should match the Vagrantfile
+# config.hostsupdater.aliases setting.
+
+vagrant ansible_ssh_host=pombot.loc
