@@ -3,7 +3,13 @@
     src: pombot.conf
     dest: /etc/init
 
+- name: check if deployment dir exists
+  stat:
+    path: "{{site_path}}"
+  register: site_path_check
+
 - name: start app
   service:
     name: pombot
     state: restarted
+  when: site_path_check.stat.exists

@@ -1,0 +1,30 @@
+# Create an account for the currently logged-in user, and copy their public key
+# to the server. This makes it possible to ssh directly, instead of using the
+# "vagrant ssh" command, and run other playbooks without specifying a user or
+# private key on the command line. Additionally, "sudo" will be usable without
+# a password, for convenience.
+
+- hosts: vagrant
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: ensure local user is synced
+      user:
+        state: present
+        name: "{{ lookup('env', 'USER') }}"
+        shell: /bin/bash
+        groups: sudo
+      register: user
+
+    - name: ensure the local user's public key is synced
+      authorized_key:
+        user: "{{user.name}}"
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+    - name: ensure the synced user has passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers.d/synceduser
+        regexp: "NOPASSWD:ALL$"
+        line: "{{user.name}} ALL=(ALL) NOPASSWD:ALL"
+        create: yes
+        validate: "visudo -cf %s"
