@@ -1,0 +1,42 @@
+- name: Add certbot ppa
+  apt_repository:
+    repo: ppa:certbot/certbot
+    state: present
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install certbot
+  apt:
+    name: python-certbot-nginx=0.14.*
+    state: present
+
+  # This errors because the certbot nginx plugin doesn't support installation into nginx ssl_params files.
+  # However, it's still able to generate a cert and verify the domain, two actions that aren't possible to
+  # execute via flags to the plugin. So instead, we run the whole thing to get free verification. In future
+  # we can refactor this to do the proof challenge in some other way if the plugin lags on this feature.
+- name: Run certbot
+  command: certbot -m infrastructure@bocoup.com --agree-tos -n --domains {{ inventory_hostname }} --nginx
+  ignore_errors: yes
+
+- name: Symlink cert to certbot
+  file:
+    src: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
+    dest: "{{ssl_cert_path}}"
+    force: yes
+    state: link
+
+- name: Symlink key to certbot
+  file:
+    src: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
+    dest: "{{ssl_key_path}}"
+    force: yes
+    state: link
+
+- name: Add cron job for cert renewal
+  cron:
+    name: Certbot automatic renewal.
+    job: "/usr/bin/certbot renew --quiet --no-self-upgrade && service nginx restart"
+    minute: 0
+    hour: 23

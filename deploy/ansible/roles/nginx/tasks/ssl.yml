@@ -17,6 +17,10 @@
   when: inventory_hostname == "vagrant"
   notify: restart nginx
 
+- name: use certbot to generate ssl cert/key
+  include: certbot.yml
+  when: env != "development"
+
 - name: ensure ssl cert/key exist
   stat: path={{item}}
   register: ssl_files
